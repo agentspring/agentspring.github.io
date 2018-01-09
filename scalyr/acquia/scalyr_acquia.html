@@ -622,7 +622,7 @@ $</pre>
         <li value="1">Download the supporting files, <a title="Acquia Scalyr support files"
             href="https://agentspring.github.io/scalyr/acquia/scalyr_acquia.tar.gz">scalyr_acquia.tar.gz</a>, into the <code>acquia</code> directory created above.
         <div class="codeblock"> $ cd /home/scalyr/acquia<br>
-          $ curl -O https://agentspring.github.io/scalyr/acquia/scalyr_acquia.tar.gz 
+          $ curl -O https://agentspring.github.io/scalyr/acquia/scalyr_acquia.tar.gz<br>
           $ tar -xzvf scalyr_acquia.tar.gz</div>
         <br>
         </li>
@@ -651,7 +651,7 @@ IO_TIMEOUT=0                    #seconds. rsync I/O timeout. 0=none
 # For verbose output change the q switch to v
 # Remove z to prevent compression
 
-rsync -zq --timeout=$IO_TIMEOUT -e "ssh -o ConnectTimeout=$SSH_TIMEOUT" --inplace $ACQUIA_SSH_ADDR:$ACQUIA_LOG_PATH/$ACQUIA_FILES $LOCAL_LOG_PATH/ 
+rsync -zq --timeout=$IO_TIMEOUT -e "ssh -o ConnectTimeout=$SSH_TIMEOUT" --inplace $ACQUIA_SSH_ADDR:$ACQUIA_LOG_PATH/$ACQUIA_FILES $LOCAL_LOG_PATH/
 </pre></div>
          <div class="ac-container">
          <div><input id="ac5" name="accordion5" type="checkbox"> <label for="ac5">
@@ -840,18 +840,6 @@ Path /var/log/scalyr-agent-2/agent.log: copied 265187 bytes (1060 lines), 0 byte
           <td>Rsync log</td>
           <td>acquia-rsync.log</td>
           <td><a href="scalyr_acquia_parser_ref.html#refRsyncLog">as_acq_RsyncLog</a></td>
-        </tr>
-        <tr>
-          <td><a title="MySQL slow query log" href="https://docs.acquia.com/articles/tools-parsing-slow-query-log">
-          MySQL slow query log</a></td>
-          <td>slow_query_log_[site]_[ts].sql</td>
-          <td>n/a</td>
-        </tr>
-        <tr>
-          <td><a title="Acquia Varnish Log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/varnish-request">
-          Varnish request log</a></td>
-          <td>varnish.log</td>
-          <td>n/a</td>
         </tr>
       </tbody>
     </table>

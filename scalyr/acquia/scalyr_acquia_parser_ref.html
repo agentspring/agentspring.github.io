@@ -279,7 +279,7 @@ pre  {
           <td>17</td>
           <td>requestId</td>
           <td><code>v-00000zzz-d2d4-11e6-9bed-0aeea9eaf9af</code></td>
-          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files â€” for more information, see <a title="Using HTTP request IDs" href="https://docs.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
+          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files — for more information, see <a title="Using HTTP request IDs" href="https://docs.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
         </tr>
         <tr>
           <td><strong>Discarded</strong></td>
@@ -382,7 +382,7 @@ pre  {
           <td>3</td>
           <td>requestId</td>
           <td><code>v-0000zzzz-d2b4-0000-b3a4-129zzzzd8266</code></td>
-          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files â€” for more information, see <a href="https://docs.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
+          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files — for more information, see <a href="https://docs.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
         </tr>
       </tbody>
     </table>
@@ -439,7 +439,7 @@ pre  {
           <td>6</td>
           <td>uid</td>
           <td><code>154496</code></td>
-          <td>The Drupal user ID initiating the request â€” 0 means an anonymous user</td>
+          <td>The Drupal user ID initiating the request — 0 means an anonymous user</td>
         </tr>
         <tr>
           <td>7</td>
@@ -463,7 +463,7 @@ pre  {
           <td>10</td>
           <td>requestId</td>
           <td><code>v-bf1b96bc-e9a5-11e6-98b5-0aeea9eaf9af</code></td>
-          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files â€” for more information, see <a title="Using HTTP request IDs" href="https://library.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
+          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files — for more information, see <a title="Using HTTP request IDs" href="https://library.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
         </tr>
         <tr>
           <td><strong>Discarded</strong></td>
@@ -545,7 +545,7 @@ pre  {
           <td>9</td>
           <td>drupalUserId</td>
           <td><code>0</code></td>
-          <td>The Drupal user ID initiating the request â€” 0 means an anonymous user<br>
+          <td>The Drupal user ID initiating the request — 0 means an anonymous user<br>
           </td>
         </tr>
         <tr>
@@ -564,7 +564,7 @@ pre  {
           <td>12</td>
           <td>requestId</td>
           <td><code>v-00000000-845b-0000-8178-22000ab832c9</code></td>
-          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files â€” for more information, see <a title="Using HTTP request IDs" href="https://docs.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
+          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files — for more information, see <a title="Using HTTP request IDs" href="https://docs.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
         </tr>
       </tbody>
     </table>
@@ -660,7 +660,7 @@ pre  {
           <td>1</td>
           <td>logLevel</td>
           <td><code>NOTICE</code></td>
-          <td>The issue severity/log level â€” possible values: ALERT, ERROR, WARNING, NOTICE, DEBUG</td>
+          <td>The issue severity/log level — possible values: ALERT, ERROR, WARNING, NOTICE, DEBUG</td>
         </tr>
         <tr>
           <td>2</td>
@@ -724,7 +724,7 @@ pre  {
 
  <h3 id="refAFields">Additional Fields</h3>
     <p>A number of custom fields are used to annotate, or tag, log messages with meaningful and descriptive attributes. These field tags are used to simplify event filtering, making events easier to find. Custom fields can be defined at various levels. The lowest, or most narrow fields, are set by parser rules. Parser fields can be set for all log messages processed by that parser or conditionally set, depending on a log format match. Next is the Log level. Log level fields are defined in the <code>logs</code> section of the agent configuration file along with the parser setting. All messages processed from a particular log file are tagged with these Log fields. Agent level fields are also defined in the agent configuration file. Agent fields tag ALL messages processed by the Scalyr agent regardless of where the message originated from.</p>
-    
+
     <p><em>Server fields</em>. Scalyr describes certain fields as <em>Server</em> fields. All fields defined in the agent configuration file are Server fields (e.g., <code>siteEnv</code>). There are also built-in Server fields (e.g., <code>serverHost</code>). The scope of Server fields makes them special because they can be referenced by other configurations settings such as for <a href="https://www.scalyr.com/help/dashboards">Dashboards</a>.</p>
     <table style="width: 100%;">
       <caption>Additional Fields</caption>
