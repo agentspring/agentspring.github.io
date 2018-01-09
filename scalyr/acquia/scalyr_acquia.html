@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <title>Monitoring and Log Analytics of Acquia Drupal Sites Using Scalyr | AgentSpring</title>
+    <meta content="AgentSpring, LLC" name="author">
+    <meta content="Monitoring Your Drupal Site in the Acquia Cloud with Cloud-based Log
+      Aggregation and Analytics Using Scalyr" name="description">
+    <meta content="acquia, scalyr, drupal, cms, cloud, monitoring, devops, log, aggregation, analytics, apache, mysql, php, access, error, elk, splunk"
+      name="keywords">
+    <meta content="Sublime Text and TextPad" name="generator">
+    <style>
+body {
+  font-family: "Proxima Nova", "proxima-nova", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.6em;
+  color: #222;
+  margin-left: 20px;
+  width: 95%
+}
+h1 {
+	font-size: 2.25rem;
+}
+h2 {
+	font-size: 1.5rem;
+}
+h3 {
+	font-size: 1.3rem;
+}
+h4 {
+	font-size: 1.1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: normal;
+	line-height: 1.3em;
+}
+p {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: normal;
+    line-height: 1.5em;
+    margin-bottom: 1.25rem;
+    text-rendering: optimizeLegibility;
+}
+a {
+	color: #008CBA;
+	line-height: inherit;
+	text-decoration: none;
+}
+
+ul, ol, dl {
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.6rem;
+    list-style-position: outside;
+}
+
+table {
+    background: #FFFFFF;
+    border: solid 1px #DDDDDD;
+    margin-bottom: 1.25rem;
+    table-layout: auto;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+table tr th {
+    border-bottom: 1px solid #ccc;
+    background-color: #ddd;
+}
+table tr th, table tr td {
+    font-size: 0.875rem;
+    color: #222222;
+    line-height: 1.3em;
+    padding: 0.562rem 0.625rem;
+    text-align: left;
+}
+caption {
+    caption-side: bottom;
+}
+
+code {
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-weight: normal;
+    background-color: #f8f8f8;
+    border-color: #dfdfdf;
+    border-style: solid;
+    border-width: 1px;
+    color: #333333;
+    padding: 0.125rem 0.3125rem 0.0625rem;
+}
+
+pre  {
+    font-family: inherit;
+    font-size: inherit;
+    margin: 5px 0px 0px 0px;
+}
+
+
+.codeblock {
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-size: .875rem;
+    line-height: 1.2rem;
+    background-color: #EEEEEE;
+    border: 1px solid #ddd;
+    padding: 13px;
+    white-space: nowrap;
+    overflow: auto;
+}
+.noncode {
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    white-space: nowrap;
+    overflow: auto;
+}
+
+
+/****** Accordion CSS ******/
+
+.ac-container{
+	width: auto;	/* width of the container */
+	margin: 10px auto 30px auto;
+	text-align: left;
+}
+.ac-container input{
+	display: none;	/* Hide checkboxes - there is no real input */
+}
+.ac-container label { /* Styling of tab text to Click on */
+	font-size: inherit;.
+  text-decoration: line-through;
+	color: #008CBA;
+	padding: 5px;
+	position: relative;
+/*	display: block; */
+	z-index: 20;
+	cursor: pointer;
+	background: #ffffff; /* background-color: transparent; */
+}
+
+.ac-container input:checked + label { /* styling of tab text when expanded */
+	background: #EEEEEE;
+}
+
+.ac-container article{
+/* display: inline-block; */
+	background: #EEEEEE;	/* text bg color */
+	margin-top: 0px;
+	padding-left: 5px; /* matches label */
+	overflow: hidden;	/* do not overlay text */
+
+/*	Horiz scrollbar
+    overflow: auto;
+	white-space: nowrap;
+*/
+
+	height: 0px;		/* initial height */
+	position: relative;
+	-webkit-transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
+	-moz-transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
+	-o-transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
+	-ms-transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
+	transition: height 0.3s ease-in-out, box-shadow 0.6s linear;
+}
+.ac-container article p {	/* Styling the paragraphs within article */
+	color: #222222;
+	margin: 0;		/* no margin, we have used padding */
+	line-height: 23px;
+	font-size: 14px;
+	padding: 5px;
+ }
+
+.ac-container input:checked ~ article{
+	transition:
+		height 0.5s ease-in-out,
+		box-shadow 0.1s linear;
+	box-shadow: 0px 0px 0px 1px rgba(155,155,155,0.3);
+}
+.ac-container input:checked ~ article.ac-height{
+	height: 100%;
+    overflow: auto;
+}
+
+/*
+.ac-container label:hover{
+	color: #008CBA;
+}
+*/
+
+/*
+.ac-container label:hover:after,
+.ac-container input:checked + label:hover:after{
+	content: '';
+	position: absolute;
+	width: 24px;
+	height: 24px;
+	right: 13px;
+	top: 7px;
+}
+*/
+</style>
+</head>
+<!-- ****************************** BODY ****************************** -->
+  <body>
+    <h1>Monitoring Your Drupal Site in the Acquia Cloud with Cloud-based Log
+      Aggregation and Analytics Using Scalyr</h1>
+    <span style="font-size: .8em">AgentSpring, LLC | December 11, 2017 | <a href="mailto:click2see.com?subject=Scalyr-Acquia"  onClick="this.href=this.href.replace('click', 'projects@'); this.href=this.href.replace('2see', 'agentspring');">projects<span style="display:none">foo</span>@agentspring.com</a></span>
+    <br>
+    <p>The Acquia Platform provides a number of features for monitoring the activity and health of your Drupal site. To supplement the active monitors, Acquia records detailed information about each request to your site in addition to details on PHP performance and errors generated by the web server or your application. This information is saved to as many as 8 different log files per environment. To make productive use of this log data, <a href="http://www.scalyr.com">Scalyr</a>, a cloud-based log aggregation and reporting service, is used to centralize the data for analysis, troubleshooting and reporting purposes. Below lists the Features and Benefits of implementing a log aggregation solution such as Scalyr.</p>
+<div style=“width:750px;”>
+    <div style="float: left; width: 375px; padding-right: 10px;">
+    <ul>
+      <li>Consolidate logs from all three environments (Production, Staging, Development)</li>
+      <li>Log messages are parsed into individual fields</li>
+      <li>Search on any field (e.g., http status, logLevel, ip, request-id, etc) or regular expression</li>
+      <li>Search one or all three environments at the same time</li>
+      <li>Assists in troubleshooting and log analysis</li>
+      <li>One-click cross-log correlation based on request-id or other fields</li>
+      <li>Save common Searches for reuse later</li>
+      <li>Define Alerts based on customized criteria</li>
+      <li>Build Dashboards (charts and reports)</li>
+    </ul>
+    </div>
+    <div style="float: left; width: 375px;">
+      <ul>
+      <li>Predefined Searches, Alerts and Dashboards</li>
+      <li>Minimal affect on Acquia servers</li>
+      <li>Nothing installed on Acquia servers</li>
+      <li>Currently used to monitor Acquia sites</li>
+      <li>Cloud solution</li>
+      <li>Subscription based log aggregation</li>
+      <li>Easy setup, easy to use</li>
+      <li>Cost Effective (1st month free)</li>
+      <li>Can run in batch mode</li>
+      <li>Requirements: Acquia subscription, Scalyr subscription, Linux server (runs Scalyr agent for data collection. Use existing server or cloud VM)</li>
+    </ul>
+    </div>
+</div>
+    <div style="clear: left;"></div>
+
+
+<!-- **************************** SCALYR STEPS ************************** -->
+    <h2>Enhanced Log Analytics with Scalyr</h2>
+    <p>The following steps describe how Scalyr can be implemented to support the
+      features listed above. Specification details were gathered from the Acquia help
+      center documentation and support staff and include
+      configuration commands, identification of pertinent logs, data collection
+      options, log formats, relevant queries and alert conditions.
+      Implementation steps are described below:</p>
+    <ol>
+      <li><a href="#step1">Identify application logs</a></li>
+      <li><a href="#step2">Configure Scalyr machine to collect Acquia logs</a>
+        <ol type="a">
+          <li>Configure Scalyr machine </li>
+          <li>Configure SSH</li>
+          <li>Configure Acquia</li>
+          <li>Create rsync script</li>
+          <li>Configure cron</li>
+        </ol>
+      </li>
+      <li><a href="#step3">Upload log data to Scalyr Cloud</a>
+        <ol type="a">
+          <li>Configure Scalyr agent</li>
+        </ol>
+      </li>
+      <li><a href="#step4">Apply Parsing Logic</a>
+        <ol type="a">
+          <li>Install Scalyr command-line tool</li>
+          <li>Set command-line tool API keys</li>
+          <li>Install Scalyr configurations</li>
+        </ol>
+      </li>
+      <li><a href="#searches">Searches, Alerts and Dashboards</a></li>
+      <li><a href="#monitors">HTTP Monitors</a></li>
+      <li type="A" value="1"><a href="./scalyr_acquia_parser_ref.html">Parser Reference Tables</a></li>
+      <li type="A" value="2"><a href="./scalyr_acquia_parser_ref.html#refAFields">Additional Fields</a></li>
+      <li type="A" value="3"><a href="#acquia">Acquia Monitoring Features</a></li>
+    </ol>
+    <em>Prerequisites (For Steps 3-5):</em><br>
+    <ul>
+      <li><a title="Scalyr Agent" href="https://www.scalyr.com/help/welcome">Scalyr
+          Agent</a> is installed and running on Linux</li>
+      <li>You are logged into your <a href="https://www.scalyr.com" target="_blank">Scalyr</a> account and verified baseline monitoring is working (e.g. agent logs are being uploaded)</li>
+      <li>You are logged into your <a title="Acquia Home" href="https://www.acquia.com/" target="_blank">Acquia</a> Cloud account</li>
+    </ul>
+
+<!-- ****************************** STEP 1 ****************************** -->
+
+    <h3 id="step1">Step 1. Identify application logs</h3>
+    Acquia provides access to the following <a title="Acquia Logs" href="https://docs.acquia.com/acquia-cloud/monitor/logs">logs</a>:<br>
+    <br>
+    <table style="width: 100%;">
+      <caption>Acquia Site Application Logs</caption>
+      <tbody>
+        <tr>
+          <th>Log Type</th>
+          <th>Filename</th>
+          <th>Availability</th>
+        </tr>
+        <tr>
+          <td><a title="Apache access log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/apache-access">
+          Apache access log</a></td>
+          <td>access.log</td>
+          <td>SSH utilities, Acquia UI</td>
+        </tr>
+        <tr>
+          <td><a title="Apache error log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/apache-error">
+          Apache error log</a></td>
+          <td>error.log</td>
+          <td>SSH utilities, Acquia UI</td>
+        </tr>
+        <tr>
+          <td><a title="PHP error log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/php-error">
+          PHP error log</a></td>
+          <td>php-errors.log</td>
+          <td>SSH utilities, Acquia UI</td>
+        </tr>
+        <tr>
+          <td><a title="Drupal request log" href="https://library.acquia.com/acquia-cloud/monitor/logs/drupal-requests">
+          Drupal page request log</a></td>
+          <td>drupal-requests.log</td>
+          <td>SSH utilities, Acquia UI</td>
+        </tr>
+        <tr>
+          <td><a title="Drupal watchdog log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/drupal-watchdog">
+          Drupal watchdog log</a></td>
+          <td>drupal-watchdog.log</td>
+          <td>SSH utilities, Acquia UI</td>
+        </tr>
+        <tr>
+          <td><a title="FPM access log" href="http://www.tothenew.com/blog/php5-fpm-logging/">
+          FPM access log</a></td>
+          <td>fpm-access.log</td>
+          <td>SSH utilities</td>
+        </tr>
+        <tr>
+          <td><a title="FPM error log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/fpm-error">
+          FPM error log</a></td>
+          <td>fpm-error.log</td>
+          <td>SSH utilities</td>
+        </tr>
+        <tr>
+          <td><a title="Drush cron log" href="https://docs.acquia.com/acquia-cloud/manage/cron">
+          Drush Cron log</a></td>
+          <td>drush-cron.log</td>
+          <td>SSH utilities</td>
+        </tr>
+        <tr>
+          <td><a title="MySQL slow query log" href="https://docs.acquia.com/articles/tools-parsing-slow-query-log">
+          MySQL Slow Query log</a></td>
+          <td>slow_query_log_[site]_[ts].sql</td>
+          <td>Acquia UI</td>
+        </tr>
+        <tr>
+          <td><a title="Varnish request log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/varnish-request">
+          Varnish request log</a></td>
+          <td>-</td>
+          <td>Acquia UI</td>
+        </tr>
+        <tr>
+          <td><a title="Balancer access log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/balancer-access">
+          Balancer access log</a></td>
+          <td>-</td>
+          <td>Acquia UI</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="ac-container">
+      <div> <input id="ac1" name="accordion1" type="checkbox"> <label for="ac1"><u>Additional
+            Log Information</u></label>
+        <article class="ac-height">
+          <ul>
+            <li>Location of logs on Acquia servers: <span class="noncode">
+                /var/log/sites/[sitename].[env]/logs/[server]</span><br>
+            Example: <code>/var/log/sites/example.prod/logs/srv-1234</code><br>
+            </li>
+            <li>Acquia Cloud customers are all using PHP-FPM (<a title="Acquia PHP-FPM"
+                href="https://docs.acquia.com/article/errors-apache-error-log">Reference</a>)</li>
+            <li>All log files on Acquia Cloud, except PHP logs, use UTC for timestamp (<a title="Acquia Troubleshooting with Logs" href="https://docs.acquia.com/article/introduction-troubleshooting-log-files">Reference</a>)</li>
+            <li>Apache access log contains only requests that have bypassed Varnish (<a title="Acquia Access Log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/apache-access">Reference</a>)</li>
+            <li>Drupal watchdog log is only available if the syslog module is
+              enabled (<a title="Acquia Drupal Watchdog" href="https://library.acquia.com/acquia-cloud/monitor/logs/drupal-watchdog">Reference</a>)</li>
+            <li>Queries longer than 1 second are logged to the MySQL slow query
+              log (<a title="Acquia MySQL Slow Query Log" href="https://docs.acquia.com/articles/tools-parsing-slow-query-log">Reference</a>)</li>
+            <li>Varnish and Balancer logs are typically only available using the log stream feature (<a title="Acquia Varnish Log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/varnish-request">Reference</a>)</li>
+            <li>Varnish and Balancer logs are available if you have dedicated balancers (<a title="Acquia Varnish Log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/balancer-access">Reference</a>)</li>
+            <li>The <code>drush-cron.log</code> exists if cron output is
+              specifically redirected to the file (<a title="Acquia Drush Cron"
+                href="https://docs.acquia.com/article/drush-cron">Reference</a>)</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+    <p>Reviewing recent and archived logs can give you insight into the data
+      available within the logs. Acquia maintains many weeks of historical
+      archives for most logs (Note: logs that have zero size will not be
+      archived so you may not see the same number of archives, .gz files, for
+      each log). <a href="#step4">Step 4</a> links to additional documentation
+      describing the format for each log.</p>
+
+<!-- ****************************** STEP 2 ****************************** -->
+
+    <h3 id="step2">Step 2. Configure Scalyr machine to collect Acquia logs</h3>
+    <p>There are two options to upload Acquia log data into Scalyr: <a title="Acquia syslog forwarding"
+        href="https://docs.acquia.com/acquia-cloud/monitor/logs/forwarding">Syslog
+        forwarding</a> and the Scalyr agent.</p>
+    <p>Syslog forwarding requires an Acquia Enterprise customer to have an Elite
+      subscription and an Acquia <a title="Acquia TAM" href="https://library.acquia.com/guide/tam">Technical
+        Account Manager</a>. Scalyr supports syslog forwarding, however, this solution assumes your Acquia
+      subscription does not meet the requirements so syslog forwarding is not consider here. There are certain benefits and drawbacks to using syslog forwarding. Even if the syslog forwarding
+      requirements are met, you might still consider using the methods outlined
+      here.</p>
+    <p>Using the Scalyr agent to upload the log data to the Scalyr cloud
+      requires that the agent have read access to the log files.
+      <a href="https://library.acquia.com/acquia-cloud/arch/tech-platform">Acquia does not support
+      installing agent processes on its servers</a>, thus, all logs must be
+      copied from the Acquia environment to a machine running the agent.</p>
+    <p>The general approach taken here is to use <code>rsync</code>to copy log
+      files from Acquia to a local directory accessible by the Scalyr agent. The
+      remaining steps in this section specify how to configure a Linux machine to copy the logs from Acquia and have the Scalyr agent upload them to the Scalyr Cloud.</p>
+    <p>Examples in this document are based on the following environment:</p>
+    <table style="width: 100%;">
+      <tbody>
+        <tr>
+          <th>Configuration</th>
+          <th>Selection</th>
+          <th>Comment</th>
+        </tr>
+        <tr>
+          <td>Site Name</td>
+          <td>example.com</td>
+          <td>The Drupal website</td>
+        </tr>
+        <tr>
+          <td>Operating System</td>
+          <td>Linux (ubuntu 16.04 LTS)</td>
+          <td>Microsoft Azure VM (optional)<br>
+            Located in same region as Acquia servers</td>
+        </tr>
+        <tr>
+          <td>User:group</td>
+          <td>scalyr:scalyr</td>
+          <td>User used to run rsync</td>
+        </tr>
+        <tr>
+          <td>User privileges</td>
+          <td>sudo</td>
+          <td>Not required but some tasks require root</td>
+        </tr>
+        <tr>
+          <td>User HOME directory</td>
+          <td>/home/scalyr</td>
+          <td>User's default login directory</td>
+        </tr>
+        <tr>
+          <td>Install directory</td>
+          <td>/home/scalyr/acquia</td>
+          <td>Where various scripts and config files will be stored</td>
+        </tr>
+        <tr>
+          <td>Local log directories</td>
+          <td>/var/log/acquia/prod<br>/var/log/acquia/test<br>/var/log/acquia/dev</td>
+          <td>Maintains sync'd copies of Acquia logs<br>for each environment</td>
+        </tr>
+        <tr>
+          <td>Scalyr subscription</td>
+          <td>Start Up Plan</td>
+          <td>Works for most (based on visitor traffic)</td>
+        </tr>
+        <tr>
+          <td>Azure subscription</td>
+          <td>B1MS</td>
+          <td>Optional<br>
+          </td>
+        </tr>
+        <tr>
+          <td>Acquia subscription</td>
+          <td>Professional</td>
+          <td>Single Drupal site<br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><em>If you configure your Scalyr machine as shown, there will be minimal
+        changes to the steps outlined below.</em></p>
+<!-- *********************** CONFIGURATION TASKS ************************ -->
+    <h4>Configuration Tasks</h4>
+    <p>On the Scalyr machine, perform the follow steps.</p>
+     <ol type="a">
+      <li>Login as the user which will run the <code>rsync</code> command (e.g., <code>scalyr</code>)</li>
+      <li>Create needed directories<br>
+      For installation files:
+      <div class="codeblock">$ mkdir /home/scalyr/acquia</div>
+      For sync'd log files:
+      <div class="codeblock">$ sudo mkdir /var/log/acquia<br>
+        $ sudo mkdir /var/log/acquia/prod<br>
+        $ sudo mkdir /var/log/acquia/test<br>
+        $ sudo mkdir /var/log/acquia/dev<br>
+        $ sudo chown -R scalyr:scalyr /var/log/acquia<br>
+        $ sudo chmod -R 755 /var/log/acquia<br>
+        $ touch /var/log/acquia/check<br>
+        $ rm /var/log/acquia/check</div>
+      <em>* If you receive an error creating the 'check' file, adjust directory
+        permissions and ownership settings as needed and try again. (If you just
+        added the user to the group owner of the directory, make sure you
+        re-login before testing)</em><br>
+        <br>
+      </li>
+
+      <li>Configure SSH access to your Acquia site
+      <ol type="i">
+        <li value="1">Generate SSH key pair - <a title="Acquia Generate SSH key pair"
+            href="https://docs.acquia.com/acquia-cloud/ssh/generate">Acquia Instructions</a></li>
+        <li value="2">Acquia: Add public key to Acquia profile - <a title="Acquia add SSH keys"
+            href="https://docs.acquia.com/acquia-cloud/ssh/enable/add-key">Acquia Instructions</a></li>
+        <li value="3">Acquia: Determine SSH address (SSH URL as Acquia calls it)
+          <p>Find your SSH addresses by logging into Acquia and navigating to:<br>
+            (It does matter which environment is selected)<br><br>
+          <span class="noncode">Applications &gt; Select [Application] &gt;
+            Select [Dev, Stage, or Prod] &gt; Overview<br>
+            <br>
+          </span> Example: <code>example.prod@srv-1234.devcloud.hosting.acquia.com</code><br>
+          <em>* Save the SSH address, it will be needed later.</em>
+          <br></p>
+         </li>
+        <li value="4">Check SSH access to Acquia servers by logging into the
+          production environment, 'prod' (Other options are 'dev' and 'test')
+          <div class="codeblock">$ ssh example.prod@srv-1234.devcloud.hosting.acquia.com
+            <pre>Welcome to Acquia Cloud. For information about shell access on this server,
+please see: https://docs.acquia.com/acquia-cloud/ssh
+
+Usage may be monitored and audited.
+
+example@srv-1234:/mnt/gfs/home/example$</pre>
+          </div>
+        <br>
+        </li>
+
+        <li value="5">Verify location of Acquia log files (you should be logged
+          into your Acquia server now)
+        <div class="codeblock"> example@srv-1234:/mnt/gfs/home/example$
+          cd $(dirname $ACQUIA_HOSTING_DRUPAL_LOG)<br>
+          example@srv-1234:/mnt/gfs/home/example$ pwd<br>
+          <code>/var/log/sites/example.prod/logs/srv-1234</code><br>
+          example@srv-1234:/mnt/gfs/home/example$ ls *.log
+          <pre>
+access.log           drupal-watchdog.log  error.log       fpm-error.log
+drupal-requests.log  drush-cron.log       fpm-access.log  php-errors.log
+          </pre>example@srv-1234:/mnt/gfs/home/example$ exit </div>
+        <em>* Save the path that is returned, it will be needed later</em>
+        <br>
+
+        <div class="ac-container">
+         <div><input id="ac2" name="accordion2" type="checkbox"> <label for="ac2">
+            <u>Accessing logs for all environments</u></label>
+          <article class="ac-height">
+            <p>Logs for all environments are accessible regardless of which
+              environment you initially SSH into. To access logs for other
+              environments change 'prod' to 'dev' or 'test'. Example log
+              directories:</p>
+            <p><code>/var/log/sites/example.<b>dev</b>/logs/srv-1234<br>
+            /var/log/sites/example.<b>test</b>/logs/srv-1234<br>
+            /var/log/sites/example.<b>prod</b>/logs/srv-1234 </code></p>
+          </article>
+         </div>
+       </div> <!-- Accordion ac-container -->
+       </li>
+      </ol>
+      </li>
+
+      <li>Test rsync
+      <p>Once you have successfully connected to the Acquia servers using SSH
+        and determined the Acquia log directory, you are ready to test <code>rsync</code>.
+        Using the example below, replace the SSH address, Acquia log path and
+        local log path with your settings. (You should be on the Scalyr machine)</p>
+      <div class="codeblock">$ rsync -zv -e ssh
+        <mark>example.prod@srv-1234.devcloud.hosting.acquia.com</mark>:<mark>/var/log/sites/example.prod/logs/srv-1234</mark>/*.log <mark>/var/log/acquia/prod</mark>/<br>
+        <pre>access.log
+drupal-requests.log
+drupal-watchdog.log
+drush-cron.log
+error.log
+fpm-access.log
+fpm-error.log
+php-errors.log
+
+sent 9,584 bytes  received 556 bytes  4,056.00 bytes/sec
+total size is 1,096,261  speedup is 5.11
+$</pre>
+        $ ls <mark>/var/log/acquia/prod</mark>
+        <pre>access.log           drupal-watchdog.log  error.log       fpm-error.log
+drupal-requests.log  drush-cron.log       fpm-access.log  php-errors.log
+$</pre>
+      </div>
+      <p>Note: Since this will be the first execution of <code>rsync</code>,
+        the command will take longer than usual. This is because the logs do not
+        exist locally and the entire contents are transferred.</p>
+      <div class="ac-container">
+        <div><input id="ac3" name="accordion3" type="checkbox"> <label for="ac3">
+          <u>Possible Errors</u></label>
+          <article class="ac-height">
+            <p><u>Acquia server unreachable</u> - Check server name of the SSH address<br>
+              <span class="noncode">ssh: connect to host
+                srv-123.devcloud.hosting.acquia.com port 22: Connection timed out</span>
+              <br>
+              <u>Acquia site log path is bad</u> - Check Acquia directory name<br>
+              <span class="noncode">rsync: change_dir
+                "/var/log/sites/example.prod/logs/srv-123" failed: No such file or directory (2)<br>
+                rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1655) [Receiver=3.1.1]</span>
+              <br>
+              <u>SSH key issues</u> - Check the username (e.g., example.prod) of the SSH address?<br>
+              <span class="noncode">Permission denied (publickey).<br>
+                rsync: connection unexpectedly closed (0 bytes received so far)
+                [Receiver]</span></p>
+          </article>
+        </div>
+      </div>
+      </li>
+      <li>Create rsync script
+      <ol type="i">
+        <li value="1">Download the supporting files, <a title="Acquia Scalyr support files"
+            href="https://agentspring.github.io/scalyr/acquia/scalyr_acquia.tar.gz">scalyr_acquia.tar.gz</a>, into the <code>acquia</code> directory created above.
+        <div class="codeblock"> $ cd /home/scalyr/acquia<br>
+          $ curl -O https://agentspring.github.io/scalyr/acquia/scalyr_acquia.tar.gz 
+          $ tar -xzvf scalyr_acquia.tar.gz</div>
+        <br>
+        </li>
+        <li value="2">Edit <code>acquia_rsync.sh</code> to adjust variables for your
+          environment. Exit the editor when finished (Esc.
+        <div class="codeblock">$ vi acquia_rsync.sh</div>
+        <div class="codeblock">
+          <pre>#!/bin/bash
+#
+# Executes rsync command to copy active logs ('*.log' by default)
+# from the identified Acquia server.
+#
+# Adjust the follow variables for your environment
+
+ACQUIA_SSH_ADDR=<mark>example.prod@srv-1234.devcloud.hosting.acquia.com</mark>
+ACQUIA_LOG_PATH=<mark>/var/log/sites/example.prod/logs/srv-1234</mark>  #don't add trailing /
+ACQUIA_FILES='*.log'             #change to '*' if want log archives also
+
+ACQUIA_SITE_ENVS="<mark>prod test dev</mark>" #which environments to monitor
+
+LOCAL_LOG_PATH=<mark>/var/log/acquia</mark>  #where logs are copied to
+SSH_TIMEOUT=10                  #seconds. Keep &lt; scheduled frequency
+IO_TIMEOUT=0                    #seconds. rsync I/O timeout. 0=none
+
+# Command options:
+# For verbose output change the q switch to v
+# Remove z to prevent compression
+
+rsync -zq --timeout=$IO_TIMEOUT -e "ssh -o ConnectTimeout=$SSH_TIMEOUT" --inplace $ACQUIA_SSH_ADDR:$ACQUIA_LOG_PATH/$ACQUIA_FILES $LOCAL_LOG_PATH/ 
+</pre></div>
+         <div class="ac-container">
+         <div><input id="ac5" name="accordion5" type="checkbox"> <label for="ac5">
+          <u>Script Details</u></label>
+          <article class="ac-height">
+          <ul type="disc">
+            <li>Script shown is slightly different than actual.</li>
+            <li>It does not matter which environment you used for the <code>ACQUIA_SSH_ADDR</code> or <code>ACQUIA_LOG_PATH</code>.</li>
+            <li><code>ACQUIA_SITE_ENVS</code> determines which site environments to monitor: Production ('prod'), Staging ('test') and Development ('dev'). If you do not want to monitor Development, for example, delete <code>dev</code> from between the quotes.</li>
+            <li>Compression (<code>-z</code> option).<br>
+            You can determine whether the increased CPU overhead on the server is worth the savings in bandwidth. Use Acquia Stack Metric CPU charts or run <code>top</code> on the Acquia server to monitor CPU usage. If CPU usage is a concern, remove this option.</li>
+            <li>Verbose output<br>
+            Change command switch <code>q</code> to <code>v</code> for command execution details such as bytes transferred. Output will be written to the file <code>acquia-rsync.log</code>.</li>
+            <li><code>ConnectTimeout=10</code><br>
+            rsync relies on SSH for its secure TCP connection. Adjust a timeout (e.g., 10 secs) for SSH to prevent stacking of rsync commands if the Acquia server is unreachable (rsync will hang for long periods otherwise). <em>The timeout period must be less than your scheduled execution (cron) of rsync.</em></li>
+            <li><code>--inplace</code><br>
+            If this option is not specified then a new file/inode is created by rsync each time an update occurs for a log (rsync will delete the existing log and replace it with a new updated one). Scalyr sees a new log and will reprocess log entries.</li>
+            <li><code>--timeout</code><br>
+            rsync I/O timeout is disable when using a value of 0. Defaults for this script only consider a connection timeout (SSH_TIMEOUT). If you decide to set an rsync timeout you should consider the following. If your logs are very large, it may take rsync some time to analyze the files on the Acquia servers before transferring back. This delay can result in rsync being scheduled to run again before the current rsync ends.  This is an unlikely scenario, but it can occur. If rsync takes a long time to finish you will need to adjust the scheduling interval appropriately, or, to ensure that only one instance of rsync script is running change the cron command, as described in the next step, to:<br>
+            <br>
+            <code>flock -n /var/log/acquia/rsync.lock /home/scalyr/acquia/acquia_rsync.sh</code>
+            <br><br>
+            </li>
+          </ul>
+          </article>
+         </div>
+       </div> <!-- Accordion ac-container -->
+        </li>
+
+        <li value="3">Run and verify script execution (recent file timestamps)
+        <div class="codeblock">$ ./acquia_rsync.sh<br>
+          $ ls -l <mark>/var/log/acquia/prod</mark><br>
+<pre>-rw-r----- 1 scalyr scalyr 360196 Oct  6 18:31 /var/log/acquia/prod/access.log
+-rw-r----- 1 scalyr scalyr    430 Oct 16 18:31 /var/log/acquia/prod/error.log
+-rw-r----- 1 scalyr scalyr 247130 Oct 16 18:31 /var/log/acquia/prod/drupal-requests.log
+-rw-r----- 1 scalyr scalyr   8034 Oct 16 18:31 /var/log/acquia/prod/drupal-watchdog.log
+-rw-r----- 1 scalyr scalyr 434371 Oct 16 18:31 /var/log/acquia/prod/fpm-access.log
+-rw-r----- 1 scalyr scalyr   1372 Oct 16 15:11 /var/log/acquia/prod/fpm-error.log
+-rw-r----- 1 scalyr scalyr      0 Oct 16 18:31 /var/log/acquia/prod/php-errors.log
+</pre> </div>
+            <p>If files did not get transferred, check the script output for possible error messages. Refer to Possible Errors in the Test rsync step.</p>
+        </li>
+        <li value="4">Schedule rsync execution with cron
+        <div class="codeblock">$ crontab -e</div>
+        <p>Add the below entry your crontab file: (Modify the script directory and execution interval, shown set for every 1 minute, for your environment)
+        <div class="codeblock">
+          */<mark>1</mark> * * * * <mark>/home/scalyr/acquia</mark>/acquia_rsync.sh &gt;&gt; <mark>/var/log/acquia</mark>/acquia-rsync.log 2&gt;&amp;1</div>
+        </p>
+        <p>After saving your changes and waiting for the next scheduled
+          execution, verify the script is working the same way you confirmed
+          success above. If successful, your local log directory will now remain
+          in sync with the active logs in the Acquia Cloud.<br>
+          <br>
+          <em>The steps up to this point are not Scalyr specific and can be used
+            to integrate with any log aggregation or monitoring tool. The
+            remaining steps are Scalyr specific but also contain general
+            information useful for site monitoring and administration purposes.</em>
+        </p>
+        </li>
+      </ol>
+    </ol>
+<!-- ****************************** STEP 3 ****************************** -->
+    <h3 id="step3">Step 3. Upload log data to Scalyr Cloud</h3>
+    <p>Getting the log data into the Scalyr cloud requires changes to the Scalyr agent configuration. Included within the download files are Scalyr agent configuration files containing the necessary settings for monitoring the Development (dev), Staging (test) and Production (prod) environments.</p>
+    <ol type="a">
+      <li>Edit configuration files
+        <p>This step is required <em>only if</em> you chose a different local log directory than the example used in this document. If so, make the necessary changes to the highlighted areas: (shown here is the relevant section of the configuration file for production)</p>
+        <div class="codeblock">
+          $ cd /home/scalyr/acquia<br>
+          $ vi config/agent.d/acquia_prod.json
+        </div>
+        <div class="codeblock">
+<pre>
+  { path: "<mark>/var/log/acquia</mark>/prod/access.log", attributes: { parser: "as_acq_ApacheAccessLog" } },
+  { path: "<mark>/var/log/acquia</mark>/prod/error.log", attributes:  { parser: "as_acq_ApacheErrorLog" } },
+  { path: "<mark>/var/log/acquia</mark>/prod/drupal-requests.log", attributes: { parser: "as_acq_DrupalRequestsLog" } },
+  { path: "<mark>/var/log/acquia</mark>/prod/drupal-watchdog.log", attributes: { parser: "as_acq_DrupalWatchdogLog" } },
+  { path: "<mark>/var/log/acquia</mark>/prod/fpm-access.log", attributes: { parser: "as_acq_FpmAccessLog" } },
+  { path: "<mark>/var/log/acquia</mark>/prod/fpm-error.log", attributes:  { parser: "as_acq_FpmErrorLog" } },
+  { path: "<mark>/var/log/acquia</mark>/prod/php-errors.log", attributes: { parser: "as_acq_PhpErrorLog" } },
+//{ path: "<mark>/var/log/acquia</mark>/prod/drush-cron.log", attributes: { parser: "as_acq_DrushCronLog" } },
+  { path: "<mark>/var/log/acquia</mark>/acquia-rsync.log", attributes: { parser: "as_acq_RsyncLog" } }
+</pre>
+        </div>
+      <p>Repeat this step for each additional environment you plan to monitor. For Staging, use <code>acquia_test.json</code> and for Development use, <code>acquia_dev.json</code>.</p>
+      </li>
+
+      <li>Copy the desired json files to the Scalyr configuration directory
+        <div class="codeblock">
+          $ sudo cp config/agent.d/acquia_prod.json /etc/scalyr-agent-2/agent.d
+        </div>
+        <p>Repeat the above step for each additional environment you plan to monitor. For Staging, use <code>acquia_test.json</code> and for Development use, <code>acquia_dev.json</code>.</p>
+        <p>Once the files are copied, the Scalyr agent will automatically read and apply the new settings.
+          Verify changes by logging into <a href="https://www.scalyr.com/">Scalyr</a> to view log data for each log.<br>
+          Note:<br>
+          * Uploaded logs will not be parsed until the parsers have been configured.<br>
+          * After a log is configured for monitoring, it may be not be available in the Scalyr web interface until new log entries have been processed.
+        </p>
+     <div class="ac-container">
+        <div><input id="ac7" name="accordion7" type="checkbox"> <label for="ac7">
+          <u>Troubleshooting</u></label>
+          <article class="ac-height">
+            <p>Check agent log for errors</p>
+              <div class="codeblock">$ less +G /var/log/scalyr-agent-2/agent.log</div><br>
+              <p>Check Scalyr agent status. Look for lines processed and errors such as 'no matching readable file'<br></p>
+              <div class="codeblock">$ sudo scalyr-agent-2 status -v
+              <pre>
+Path /var/log/acquia/bad_log.log: <b>no matching readable file</b>, last checked Tue Oct 10 18:40:20 2017 UTC
+Path /var/log/acquia/access.log: copied 88180 bytes (<b>216 lines</b>), 0 bytes pending, 17320 bytes skipped, 117 bytes failed, last checked Tue Oct 10 18:36:01 2017 UTC
+Path /var/log/acquia/error.log: copied 0 bytes (0 lines), 0 bytes pending, last checked Tue Oct 10 18:36:01 2017 UTC
+Path /var/log/acquia/drupal-requests.log: copied 62313 bytes (<b>213 lines</b>), 0 bytes pending, 12324 bytes skipped, 145 bytes failed, last checked Tue Oct 10 18:36:01 2017 UTC
+Path /var/log/acquia/drupal-watchdog.log: copied 20414 bytes (67 lines), 0 bytes pending, 6287 bytes skipped, last checked Tue Oct 10 18:36:01 2017 UTC
+Path /var/log/acquia/fpm-access.log: copied 110089 bytes (1360 lines), 0 bytes pending, 2331 bytes skipped, 165 bytes failed, last checked Tue Oct 10 18:36:01 2017 UTC
+Path /var/log/acquia/fpm-error.log: copied 4674 bytes (41 lines), 0 bytes pending, 1136 bytes skipped, last checked Tue Oct 10 18:36:01 2017 UTC
+Path /var/log/acquia/acquia-rsync.log: copied 0 bytes (0 lines), 0 bytes pending, last checked Tue Oct 10 18:36:01 2017 UTC
+Path /var/log/acquia/php-errors.log: copied 0 bytes (0 lines), 0 bytes pending, last checked Tue Oct 10 18:36:01 2017 UTC
+Path /var/log/acquia/drush-cron.log: copied 0 bytes (0 lines), 0 bytes pending, last checked Tue Oct 10 18:36:01 2017 UTC
+Path /var/log/scalyr-agent-2/agent.log: copied 265187 bytes (1060 lines), 0 bytes pending, 50379 bytes skipped, 1458 bytes failed, last checked Tue Oct 10 18:36:01 2017 UTC
+              </pre></div>
+          </article>
+        </div>
+      </div>
+    </li>
+  </ol>
+<!-- ****************************** STEP 4 ****************************** -->
+    <h3 id="step4">Step 4. Apply Parser Logic and Other Configurations</h3>
+	    <p>To make better use of the log data being uploaded to Scalyr, it is good practice to split the log entries into fields that can be used in queries, charts and alerts.  This requires development of Log Parsers. Log parsers are provided in the download extracted in the previous steps and listed in the table below. (Log Type links point to Acquia documentation specifying the log format for the respective log. Parser links point to the parser reference table.)<br><br>
+
+	    Useful links for parser development: <a title="Scalyr Parsing Logs" href="https://www.scalyr.com/help/parsing-logs">Scalyr Parsing Logs</a>, <a title="Scalyr Parse Tester" href="https://www.scalyr.com/logParseTester">Scalyr Parse Tester</a>
+      </p>
+
+    <table style="width: 100%;">
+      <caption>Supplied Parsers</caption>
+      <tbody>
+        <tr>
+          <th>Log Type</th>
+          <th>Filename</th>
+          <th>Parser</th>
+        </tr>
+        <tr>
+          <td><a title="Apache access log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/apache-access">
+          Apache access log</a></td>
+          <td>access.log</td>
+          <td><a href="scalyr_acquia_parser_ref.html#refApacheAccessLog">as_acq_ApacheAccessLog</a></td>
+        </tr>
+        <tr>
+          <td><a title="Apache error log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/apache-error">
+          Apache error log</a></td>
+          <td>error.log</td>
+          <td><a href="scalyr_acquia_parser_ref.html#refApacheErrorLog">as_acq_ApacheErrorLog</a></td>
+        </tr>
+        <tr>
+          <td><a title="PHP error log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/php-error">
+          PHP error log</a></td>
+          <td>php-errors.log</td>
+          <td><a href="scalyr_acquia_parser_ref.html#refPhpErrorLog">as_acq_PhpErrorLog</a></td>
+        </tr>
+        <tr>
+          <td><a title="Drupal request log" href="https://library.acquia.com/acquia-cloud/monitor/logs/drupal-requests">
+          Drupal request log</a></td>
+          <td>drupal-requests.log</td>
+          <td><a href="scalyr_acquia_parser_ref.html#refDrupalRequestLog">as_acq_DrupalRequestsLog</a></td>
+        </tr>
+        <tr>
+          <td><a title="Drupal watchdog log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/drupal-watchdog">Drupal watchdog log</a></td>
+          <td>drupal-watchdog.log</td>
+          <td><a href="scalyr_acquia_parser_ref.html#refDrupalWatchdogLog">as_acq_DrupalWatchdogLog</a></td>
+        </tr>
+        <tr>
+          <td><a title="FPM access log" href="http://www.tothenew.com/blog/php5-fpm-logging/">FPM access log</a></td>
+          <td>fpm-access.log</td>
+          <td><a href="scalyr_acquia_parser_ref.html#refFpmAccessLog">as_acq_FpmAccessLog</a></td>
+        </tr>
+        <tr>
+          <td><a title="FPM error log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/fpm-error">
+          FPM error log</a></td>
+          <td>fpm-error.log</td>
+          <td><a href="scalyr_acquia_parser_ref.html#refFpmErrorLog">as_acq_FpmErrorLog</a></td>
+        </tr>
+        <tr>
+          <td>Drush cron log</td>
+          <td>drush-cron.log</td>
+          <td><a href="scalyr_acquia_parser_ref.html#refDrushCronLog">as_acq_DrushCronLog</a></td>
+        </tr>
+        <tr>
+          <td>Rsync log</td>
+          <td>acquia-rsync.log</td>
+          <td><a href="scalyr_acquia_parser_ref.html#refRsyncLog">as_acq_RsyncLog</a></td>
+        </tr>
+        <tr>
+          <td><a title="MySQL slow query log" href="https://docs.acquia.com/articles/tools-parsing-slow-query-log">
+          MySQL slow query log</a></td>
+          <td>slow_query_log_[site]_[ts].sql</td>
+          <td>n/a</td>
+        </tr>
+        <tr>
+          <td><a title="Acquia Varnish Log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/varnish-request">
+          Varnish request log</a></td>
+          <td>varnish.log</td>
+          <td>n/a</td>
+        </tr>
+      </tbody>
+    </table>
+    <ol type="a">
+      <li>Install Scalyr command-line tool
+        <p>To install the supplied parsers and other Scalyr configuration you need to first install the <a title="Scalyr command-line tool" href="https://github.com/scalyr/scalyr-tool">Scalyr command-line tool</a></p>
+        <div class="codeblock">
+          $ cd /home/scalyr/acquia<br>
+          $ curl https://raw.githubusercontent.com/scalyr/scalyr-tool/master/scalyr > scalyr<br>
+          $ chmod u+x scalyr<br>
+        </div>
+      <br>
+      </li>
+      <li>Test command-line tool
+        <p>Before you run the command-line tool, <code>scalyr</code>, you must set the Scalyr API keys.
+        Replace the API keys below with yours, found <a title="Scalyr API Keys" href="https://www.scalyr.com/keys">here</a>.</p>
+        <div class="codeblock">
+          $ export scalyr_readconfig_token='<mark>064qb3YcfUwACb7...dYuM8nnAIRn4cRHeX2wogC8pCaU-</mark>'<br>
+          $ export scalyr_writeconfig_token='<mark>0LK4XeQOUiMjusn...pOexsmePgB3QDcamOTSmKlKUdg8-</mark>'<br>
+          $ ./scalyr list-files<br>
+          <pre>/example
+/scalyr/alerts
+/scalyr_example.com/searches</pre>
+        </div>
+        <p>If not successful, run command with <code>--verbose</code> option, if needed, to help debug the problem.</p>
+      </li>
+
+      <li>Install Parsers and Other Configurations
+        <p>The agent configuration already specifies the parsers which have yet to be installed. These parsers appear as 'Undefined' on the Scalyr <a title="Scalyr Parsers" href="https://www.scalyr.com/parsers">Parsers</a> page. The installation script uses the command-line tool to install the parsers on Scalyr server.</p>
+        <div class="codeblock">
+          $ ./install_configs.sh
+        </div>
+        <p>After running the script, revisit/refresh the <a title="Scalyr Parsers" href="https://www.scalyr.com/parsers">Parsers</a> page. All 'Undefined' parsers should have changed to 'Custom'. Searches, Alerts, Dashboards and Monitors were also installed and are viewable within the Scalyr web UI.</p>
+      </li>
+      <li>Confirm logs are being parsed
+        <p>Only <em>new</em> log entries will be processed with the parsing rules. Scalyr will not re-parse historical log data. To verify parsing, click on the log file link to open the "MATCHING EVENTS" page (open in a new browser window for convenience). Select the most recent event (at the bottom), ensure the event appeared <em>after the parsers have been installed</em>, and select 'Inspect Fields'. The 'INSPECT FIELD' window appears and should show the parsed fields.<br>
+        </p>
+      </li>
+</ol>
+<h2 id="searches">Searches, Alerts and Dashboards</h2>
+<p>Installed with the parsers are predefined <a href="https://www.scalyr.com/help/saved-searches">Searches</a>, <a href="https://www.scalyr.com/help/alerts">Alerts</a> and <a href="https://www.scalyr.com/help/dashboards">Dashboards</a>. Saved Searches offer quick access to commonly executed queries. Alerts are similar to saved searches but their results are tested against threshold criteria and, if exceeded, a notification can be generated. Dashboards are pages containing one more predefined charts or reports, typically grouping related information.</p>
+    <h2>Searches</h2>
+    PreConfigured Shared Searches: (Production environment only)
+    <br>
+    <table style="width: 100%;">
+      <caption>Searches</caption>
+      <tbody>
+        <tr>
+          <th>Title</th>
+          <th>Default Time Range</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>All Production Logs</td>
+          <td>1 hour</td>
+          <td>Displays events from all Acquia production logs for past 1 hour</td>
+        </tr>
+        <tr>
+          <td>All Errors Messages</td>
+          <td>1 hour</td>
+          <td>Displays all events containing errors (logLevel <code>Warning</code> or worse) from production error logs and Drupal Watchdog log</td>
+        </tr>
+        <tr>
+          <td>Failed Login Attempts</td>
+          <td>4 hours</td>
+          <td>Displays all failed attempts to login to the production Drupal site</td>
+        </tr>
+        <tr>
+          <td>HTTP Client Errors (status=4xx)</td>
+          <td>1 hour</td>
+          <td>Displays all Apache access log events from production with HTTP status code of 400-499</td>
+        </tr>
+        <tr>
+          <td>HTTP Server Errors (status=5xx)</td>
+          <td>1 hour</td>
+          <td>Displays all Apache access log events from production with HTTP status code of 500-599</td>
+        </tr>
+        <tr>
+          <td>PHP Memory Errors</td>
+          <td>4 hours</td>
+          <td>Displays all PHP memory related error events from the production PHP error log</td>
+        </tr>
+        <tr>
+          <td>Unexpected Log Format Errors</td>
+          <td>4 hours</td>
+          <td>Displays all events tagged with <code>unexpectedLogFormat</code> from all monitored Acquia environments</td>
+        </tr>
+        <tr>
+          <td>Scalyr Triggered Alerts</td>
+          <td>24 hours</td>
+          <td>Display a history of Alerts which have triggered notifications during the past 24 hours</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="alerts">Alerts</h2>
+    PreConfigured Alerts: (All alerts apply to the production environment only)
+    <br>
+    <table style="width: 100%;">
+      <caption>Alerts</caption>
+      <tbody>
+        <tr>
+          <th>Alert Title</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>HTTP Server Error (5xx)</td>
+          <td>Triggers if any HTTP status codes 500-599 occur in past two minutes</td>
+        </tr>
+        <tr>
+          <td>Failed Login Attempts</td>
+          <td>Triggers if there are 5 failed login attempts within a two minute period</td>
+        </tr>
+        <tr>
+          <td>Rsync Error</td>
+          <td>Triggers when any <code>error:</code> message appears in the <code>acquia-rsync.log</code></td>
+        </tr>
+        <tr>
+          <td>Unexpected Log Format</td>
+          <td>Triggers if any Acquia log message did not match the expected parsing format.<br>
+            The Scalyr administrator should review these events to determine if the parsing rules need adjustment</td>
+        </tr>
+        <tr>
+          <td>Scalyr Agent Error</td>
+          <td>Triggers when the severity of an agent message > 4 (e.g., agent configuration error)</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="dashboards">Dashboards</h2>
+    PreConfigured Dashboards: (Dashboards can report on all environments)
+    <br>
+    <table style="width: 100%;">
+      <caption>Dashboards</caption>
+      <tbody>
+        <tr>
+          <th>Name</th>
+          <th>Default Time Range</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>Acquia-Diagnostics</td>
+          <td>4 hours</td>
+          <td>Provides a breakdown of HTTP status codes and reports on site error messages</td>
+        </tr>
+        <tr>
+          <td>Acquia-Performance</td>
+          <td>4 hours</td>
+          <td>Reports on various PHP performance related statistics</td>
+        </tr>
+        <tr>
+          <td>Acquia-Top-Stats</td>
+           <td>4 hours</td>
+         <td>Charts website hits and reports top statistics for various metrics (e.g., Top clients by hits, bytes, etc) obtained from the Apache access log</td>
+        </tr>
+      </tbody>
+    </table>
+    <h2 id="monitors">HTTP Monitors</h2>
+    <p>Also installed with the parsers is an HTTP monitor template that performs a URL check, every 2 minutes, to example.com. You should change the <code>url:</code> setting to a URL for your Drupal site.  The polling interval can also be adjusted. This can be done by <a href="https://www.scalyr.com/file?path=%2Fscalyr%2Fmonitors">editing the monitor configuration</a>. If more than a simple URL test is desired, refer to the <a href="https://www.scalyr.com/help/monitors">Scalyr HTTP Monitor documentation</a>.  A summary report is viewable from the <a href="https://www.scalyr.com/dash?page=monitors">Monitors</a> dashboard. Note: <a href="https://docs.acquia.com/acquia-cloud/manage/uptime">Acquia Uptime monitoring</a> provides similar capabilities but without any configurable options.
+    </p>
+
+    <h2 id="acquia">Acquia Monitoring Features</h2>
+<p>A summary of the <a title="Acquia Monitoring Options" href="https://docs.acquia.com/acquia-cloud/monitor">
+      tools</a> provided by Acquia to monitor your Drupal site are listed below. Details for these services are provided, as links, to the relevant Acquia documentation.</p>
+    <ul>
+      <li>Logs (<a title="Acquia Logs - Monitoring" href="https://docs.acquia.com/acquia-cloud/monitor/logs">Details</a>)
+        <ul>
+          <li><a title="Acquia Real-time Log Streaming" href="https://docs.acquia.com/acquia-cloud/monitor/logstream">Real-Time
+              Streaming</a> provides view of all logs, some of which are not
+            accessible otherwise.</li>
+          <li><a title="Acquia Download Logs" href="mailto:https://docs.acquia.com/acquia-cloud/monitor/logs">Download
+              active logs </a> from Acquia web interface.</li>
+          <li><a title="Acquia Log via CLI" href="https://docs.acquia.com/acquia-cloud/monitor/logs#cli">Historical
+              and active logs</a> available via SSH utilities. (Used for Scalyr integration)</li>
+        </ul>
+      </li>
+      <li>Uptime monitoring (<a title="Acquia Uptime Monitoring" href="https://docs.acquia.com/acquia-cloud/manage/uptime">Details</a>)
+        <ul>
+          <li>Monitors your Drupal application's uptime and responsiveness.</li>
+          <li>This service checks your application every minute (only on Prod though)</li>
+          <li>Requires <a title="Acquia Connector Module" href="https://docs.acquia.com/acquia-cloud/insight/install">Acquia Connector module</a></li>
+        </ul>
+      </li>
+      <li>Stack Metrics (<a title="Acquia Stack Metrics" href="https://docs.acquia.com/acquia-cloud/monitor/stackmetrics">Details</a>)
+        <ul>
+          <li>Provides real-time and historical information about an application's performance, health, and resource use (specifically, CPU, Memory, Storage).</li>
+          <li>Does not permit notifications now but is being considered by Acquia for implementation along with providing additional metrics.</li>
+        </ul>
+      </li>
+      <li>Acquia Insight (<a title="Acquia Insight" href="https://docs.acquia.com/acquia-cloud/insight">Details)</a>
+        <ul>
+          <li>Evaluates your website's performance, security, and search engine
+            optimization to help you monitor and optimize your websites.</li>
+          <li>Requires <a title="Acquia Connector Module" href="https://docs.acquia.com/acquia-cloud/insight/install">Acquia Connector module </a></li>
+        </ul>
+      </li>
+      <li>Application monitoring tools (<a title="Acquia APM" href="https://docs.acquia.com/acquia-cloud/monitor/apm">Details</a>)
+        <ul>
+          <li>Application Performance Monitoring using New Relic</li>
+          <li>Requires New Relic subscription</li>
+          <li>Available on Production only</li>
+        </ul>
+      </li>
+    </ul>
+  </body>
+</html>

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <title>Monitoring and Log Analytics of Acquia Drupal Sites Using Scalyr | AgentSpring</title>
+    <meta content="AgentSpring, LLC" name="author">
+    <meta content="Monitoring Your Drupal Site in the Acquia Cloud with Cloud-based Log
+      Aggregation and Analytics Using Scalyr" name="description">
+    <meta content="acquia, scalyr, drupal, cms, cloud, monitoring, splunk, sumologic, devops, log, aggregation, analytics, apache, mysql, php, access, error, elk, splunk" name="keywords">
+    <meta content="Sublime Text and TextPad" name="generator">
+    <style>
+body {
+  font-family: "Proxima Nova", "proxima-nova", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.6em;
+  color: #222;
+  margin-left: 20px;
+  width: 95%
+}
+h1 {
+  font-size: 2.25rem;
+}
+h2 {
+  font-size: 1.5rem;
+}
+h3 {
+  font-size: 1.3rem;
+}
+h4 {
+  font-size: 1.1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+  line-height: 1.3em;
+}
+p {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: normal;
+    line-height: 1.5em;
+    margin-bottom: 1.25rem;
+    text-rendering: optimizeLegibility;
+}
+a {
+  color: #008CBA;
+  line-height: inherit;
+  text-decoration: none;
+}
+
+ul, ol, dl {
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.6rem;
+    list-style-position: outside;
+}
+
+table {
+    font-family: inherit;
+    background: #FFFFFF;
+    border: solid 1px #DDDDDD;
+    margin-bottom: 1.25rem;
+    table-layout: auto;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+table tr th {
+    border-bottom: 1px solid #ccc;
+    background-color: #ddd;
+}
+
+table ul {
+  font-size: inherit;
+ }
+table tr th, table tr td {
+    font-size: 0.875rem;
+    color: #222222;
+    line-height: 1.3em;
+    padding: 0.562rem 0.625rem;
+    text-align: left;
+}
+table tr.even, table tr.alt, table tr:nth-of-type(2n) {
+    background: #F9F9F9;
+}
+table tr {
+    border: 1px solid #e5e5e5;
+}
+
+
+caption {
+    caption-side: bottom;
+}
+
+code {
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-weight: normal;
+    background-color: #f8f8f8;
+    border-color: #dfdfdf;
+    border-style: solid;
+    border-width: 1px;
+    color: #333333;
+    padding: 0.125rem 0.3125rem 0.0625rem;
+}
+
+pre  {
+    font-family: inherit;
+    font-size: inherit;
+    margin: 5px 0px 0px 0px;
+}
+
+
+.codeblock {
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-size: .875rem;
+    line-height: 1.2rem;
+    background-color: #EEEEEE;
+    border: 1px solid #ddd;
+    padding: 13px;
+    white-space: nowrap;
+    overflow: auto;
+}
+.noncode {
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    white-space: nowrap;
+    overflow: auto;
+}
+</style>
+</head>
+<!-- ****************************** BODY ****************************** -->
+  <body>
+    <h1>Monitoring Your Drupal Site in the Acquia Cloud with Cloud-based Log
+      Aggregation and Analytics Using Scalyr<span style="font-size: .5em"> (<a href="./scalyr_acquia.html">Back to Main Page</a>)</span></h1>
+    <span style="font-size: .8em">AgentSpring, LLC | December 11, 2017 | <a href="mailto:click2see.com?subject=Scalyr-Acquia"  onClick="this.href=this.href.replace('click', 'projects@'); this.href=this.href.replace('2see', 'agentspring');">projects<span style="display:none">foo</span>@agentspring.com</a></span>
+<br>
+    <h2 id="refTables">Parser Reference Tables and Fields for Acquia Logs</h2>
+
+    <p>The following tables indicate how the Acquia logs are parsed into fields using Scalyr parser definition files. Some field descriptions have been updated from the Acquia online documentation to more accurately describe the field's meaning.  Additionally, where applicable, field names have been normalized across logs if the field represents the same attribute (e.g., <code>acquiaSiteName</code>, <code>logLevel</code>).</p>
+      <div style="float: left;">
+      <ul>
+        <li><a href="#refApacheAccessLog">Apache Access Log</a></li>
+        <li><a href="#refApacheErrorLog">Apache Error Log</a></li>
+        <li><a href="#refPhpErrorLog">PHP Error Log</a></li>
+        <li><a href="#refDrupalRequestLog">Drupal Request Log</a></li>
+        <li><a href="#refDrupalWatchdogLog">Drupal Watchdog Log</a></li>
+      </ul>
+    </div>
+    <div style="float: left;">
+      <ul>
+        <li><a href="#refFpmAccessLog">FPM Access Log</a></li>
+        <li><a href="#refFpmErrorLog">FPM Error Log</a></li>
+        <li><a href="#refRsyncLog">Rsync Log</a></li>
+        <li><a href="#refDrushCronLog">Drush Cron Log</a></li>
+        <li><a href="#refAFields">Additional Fields</a></li>
+      </ul>
+     </div>
+  <div style="clear: left;"></div>
+    <h3 id="refApacheAccessLog"><a title="Acquia Apache Access Log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/apache-access">Apache Access Log</a></h3>
+    <p>Parser: <code>as_acq_ApacheAccessLog</code><br>Sample message:<br><code>200.0.0.1 - - [04/Jan/2017:23:20:38 +0000] "GET /contact_us HTTP/1.1" 404 10117 "-" "Pingdom.com bot version 1.4 (http://www.pingdom.com/)" vhost=alphabeta.prod.acquia-sites.com host=www.alphabeta.com hosting_site=alphabeta pid=26731 request_time=10186417 forwarded_for="200.0.0.1, 162.0.0.1" request_id="v-00000zzz-d2d4-11e6-9bed-0aeea9eaf9af"</code></p>
+    <table style="width: 100%;">
+      <caption>Apache Access Log</caption>
+      <tbody>
+        <tr>
+          <th>Position</th>
+          <th>$fieldName</th>
+          <th>Field Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>0</td>
+          <td>ip</td>
+          <td><code>200.0.0.1</code></td>
+          <td>Remote host (client IP)</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>user</td>
+          <td><code>-</code></td>
+          <td>The identity of the user determined by identd. Rarely used.</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>authUser</td>
+          <td><code>-</code></td>
+          <td>The user name, determined by HTTP authentication</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>msgTimestamp</td>
+          <td><code>04/Jan/2017:23:20:38 +0000</code></td>
+          <td>The date and time the request was received by the backend server<br>
+            <em>Parsed value stored in Unix/epoch time format (e.g., 1483572038)</em></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>method</td>
+          <td><code>GET</code></td>
+          <td>The method of the request</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>uriPath</td>
+          <td><code>/contact_us</code></td>
+          <td>The path requested. Each query parameter will have it's own field in the format <code>uriParam</code></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>protocol</td>
+          <td><code>HTTP/1.1</code></td>
+          <td>The HTTP protocol</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>status</td>
+          <td><code>404</code></td>
+          <td>The HTTP status code sent from the server to the client</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>bytes</td>
+          <td><code>10117</code></td>
+          <td>The total size, in bytes, of the response to the client</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>referrer</td>
+          <td><code>https://www.google.com</code></td>
+          <td>The referrer, which is the page (www.google.com in this case) that provided the link to this page</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>agent</td>
+          <td><code>Pingdom.com bot version 1.4 (http://www.pingdom.com/)</code></td>
+          <td>The user-agent, or browser identification string, encased in quotation marks</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>acquiaVhost</td>
+          <td><code>alphabeta.prod.acquia-sites.com</code></td>
+          <td>The underlying Acquia virtual host matching the requested hostname, <code>urlHost</code></td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>urlHost</td>
+          <td><code>www.alphabeta.com</code></td>
+          <td>The domain name/hostname, as referenced by a client, for the request, which does not have to match the Acquia virtual, <code>acquiaVhost</code>, hostname</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>acquiaSiteName</td>
+          <td><code>alphabeta</code></td>
+          <td>The internal Acquia site name (AH_SITE_NAME) this request is for</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>pid</td>
+          <td><code>26731</code></td>
+          <td>The process ID (pid) on the server that handled this request</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>requestTime</td>
+          <td><code>10186417</code></td>
+          <td>The time needed to serve the request, in microseconds (1/1000000 of a second)</td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td>forwardedFor</td>
+          <td><code>200.0.0.1, 162.0.0.1</code></td>
+          <td>The full set of IP addresses tracked as "requester IP," which will contain the IP addresses of the following if they are in use by the subscription: <ul>
+            <li>Load balancer</li>
+            <li>ELB (Elastic Load Balancer)</li>
+            <li>Content Delivery Networks or Web Application Firewalls (WAFs) such as Acquia Cloud Edge</li>
+          </ul></td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td>requestId</td>
+          <td><code>v-00000zzz-d2d4-11e6-9bed-0aeea9eaf9af</code></td>
+          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files — for more information, see <a title="Using HTTP request IDs" href="https://docs.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
+        </tr>
+        <tr>
+          <td><strong>Discarded</strong></td>
+          <td>message</td>
+          <td><code>"Uptime"<br>/security_review_test.php</code></td>
+          <td>Log messages containing these strings, related to Acquia site monitoring, are discarded</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="refApacheErrorLog"><a title="Acquia Apache Error Log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/apache-error">Apache Error Log</a></h3>
+    <p>Parser: <code>as_acq_ApacheErrorLog</code><br>Sample message:<br><code>[Fri Aug 18 20:40:36.849360 2017] [access_compat:error] [pid 11069] [client 10.0.0.1:19924] AH01797: client denied by server configuration: /var/www/html/alphabeta/docroot/index.php</code></p>
+    <table style="width: 100%;">
+      <caption>Apache Error Log</caption>
+      <tbody>
+        <tr>
+          <th>Position</th>
+          <th>$fieldName</th>
+          <th>Field Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>0</td>
+          <td>msgTimestamp</td>
+          <td><code>Fri Aug 18 20:40:36.849360 2017</code></td>
+          <td>The date and time of error.<br>
+            <em>Parsed value stored in Unix/epoch time format (e.g., 1503114036)</em></td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>module</td>
+          <td><code>access_compat</code></td>
+          <td>The module generating this error</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>logLevel</td>
+          <td><code>error</code></td>
+          <td>The severity/log level of this issue. <a href="http://httpd.apache.org/docs/current/mod/core.html#loglevel">Levels</a>: emerg, alert, crit, error, warn, notice, info, debug</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>pid</td>
+          <td><code>11069</code></td>
+          <td>The process ID (pid) handling this request</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>clientIp</td>
+          <td><code>10.0.0.1</code></td>
+          <td>The internal IP address of the balancer that forwarded the request to the server</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>clientPort</td>
+          <td><code>19924</code></td>
+          <td>The port number used by the balancer that forwarded the request to the server</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>msgMessage</td>
+          <td><code>AH01797: client denied by server configuration: /var/www/html/alphabeta/docroot/index.php</code></td>
+          <td>The message, which will vary from line to line</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <h3 id="refPhpErrorLog"><a title="Acquia PHP Error Log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/php-error">PHP Error Log</a></h3>
+    <p>Parser: <code>as_acq_PhpErrorLog</code><br>Sample message:<br><code>[04-Jan-2017 14:29:27 America/New_York] PHP Fatal error:  Allowed memory size of 367001600 bytes exhausted (tried to allocate 352591872 bytes) in /full/path/to/module/notification.php on line 504 request_id="v-0000zzzz-d2b4-0000-b3a4-129zzzzd8266"</code></p>
+    <table style="width: 100%;">
+      <caption>PHP Error Log</caption>
+      <tbody>
+        <tr>
+          <th>Position</th>
+          <th>$fieldName</th>
+          <th>Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>0</td>
+          <td>msgTimestamp</td>
+          <td><code>04-Jan-2017 14:29:27 America/New_York</code></td>
+          <td>The date and time of the request.<br>
+            <em>Parsed value stored in Unix/epoch time format (e.g., 1483568967)</em></td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>logLevel</td>
+          <td><code>Fatal</code></td>
+          <td>Type of message, indicating severity/error level.</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>msgMessage</td>
+          <td><code>Allowed memory size of 367001600 bytes exhausted (tried to allocate 352591872 bytes) in /full/path/to/module/notification.php on line 504</code></td>
+          <td>Full text of error message</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>requestId</td>
+          <td><code>v-0000zzzz-d2b4-0000-b3a4-129zzzzd8266</code></td>
+          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files — for more information, see <a href="https://docs.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="refDrupalRequestLog"><a title="Acquia Drupal Request Log" href="https://library.acquia.com/acquia-cloud/monitor/logs/drupal-requests">Drupal Request Log</a></h3>
+    <p>Parser: <code>as_acq_DrupalRequestLog</code><br>Sample message:<br><code>[03/Feb/2017:00:14:36 +0000] www.example.com POST /dashboard/?q=user http_code=302 query=q=user uid=154496 php_pid=30961 php_time=0.203 queue_wait=0 request_id="v-0000zzzz-e9a5-11e6-98b5-0aeea9eaf9af"</code></p>
+    <table style="width: 100%;">
+      <caption>Drupal Request Log</caption>
+      <tbody>
+        <tr>
+          <th>Position</th>
+          <th>$fieldName</th>
+          <th>Field Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>0</td>
+          <td>msgTimestamp</td>
+          <td><code>03/Feb/2017:00:14:36 +0000</code></td>
+          <td>The date and time of the request<br>
+            <em>Parsed value stored in Unix/epoch time format (e.g., 1486080876)</em></td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>urlHost</td>
+          <td><code>www.example.com</code></td>
+          <td>The domain name/hostname, as referenced by a client, for the request</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>method</td>
+          <td><code>POST</code></td>
+          <td>The HTTP method of the request</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>uriPath</td>
+          <td><code>/dashboard</code></td>
+          <td>The path requested. Each query parameter will have it's own field in the format <code>uriParam</code>. In this example, <code>uriQ=user</code></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>status</td>
+          <td><code>302</code></td>
+          <td>The HTTP status code returned by this request</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>queryString</td>
+          <td><code>q=user</code></td>
+          <td>The query string, which is the portion of the request_uri after the question mark.</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>uid</td>
+          <td><code>154496</code></td>
+          <td>The Drupal user ID initiating the request — 0 means an anonymous user</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>phpPid</td>
+          <td><code>30961</code></td>
+          <td>The PHP process ID (pid) for this request</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>phpTime</td>
+          <td><code>0.203</code></td>
+          <td>Time, in seconds, needed to process this request</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>queueWaitTime</td>
+          <td><code>0</code></td>
+          <td>The number of seconds this request had to wait for a PHP process to become available to handle it</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>requestId</td>
+          <td><code>v-bf1b96bc-e9a5-11e6-98b5-0aeea9eaf9af</code></td>
+          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files — for more information, see <a title="Using HTTP request IDs" href="https://library.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
+        </tr>
+        <tr>
+          <td><strong>Discarded</strong></td>
+          <td>message</td>
+          <td><code>/filter/tips<br>/system/acquia-connector-status</code></td>
+          <td>Log messages containing these strings, related to Acquia site monitoring, are discarded</td>
+        </tr>
+      </tbody>
+    </table>
+
+   <h3 id="refDrupalWatchdogLog"><a title="Acquia Drupal Watchdog Log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/drupal-watchdog">Drupal Watchdog Log</a></h3>
+    <p>Parser: <code>as_acq_DrupalWatchdogLog</code><br>Sample message:<br><code>Aug 18 21:22:01 10.0.0.1 alphabeta: https://www.example.com|1503091321|custom_module|151.0.0.1|https://example.com/documents||0||Warning: Invalid argument supplied for foreach() in views_join->build_join request_id="v-00000000-845b-0000-8178-22000ab832c9"</code></p>
+    <table style="width: 100%;">
+      <caption>Drupal Watchdog Log</caption>
+      <tbody>
+        <tr>
+          <th>Position</th>
+          <th>$fieldName</th>
+          <th>Field Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>0</td>
+          <td>msgTimestamp</td>
+          <td><code>Aug 18 21:22:01</code></td>
+          <td>The date and time of the request.<br>
+            <em>Parsed value stored in Unix/epoch time format (e.g., 1503091321)</em></td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>acquiaServer</td>
+          <td><code>10.0.0.1</code></td>
+          <td>The internal hostname or IP address of the Acquia server handling this request</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>acquiaSiteName</td>
+          <td><code>alphabeta</code></td>
+          <td>The internal Acquia site name (AH_SITE_NAME) this request is for</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>baseUrl</td>
+          <td><code>http://www.example.com</code></td>
+          <td>The base URL/domain/hostname this request was for</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>requestTimestamp</td>
+          <td><code>1503091321</code></td>
+          <td>The Unix timestamp of the request</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>type</td>
+          <td><code>custom_module</code></td>
+          <td>The category or module which this message belongs</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>requesterIp</td>
+          <td><code>151.0.0.1</code></td>
+          <td>The originating/client IP address of this request</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>requestedUrl</td>
+          <td><code>https://example.com/documents</code></td>
+          <td>The full URL of the requested page</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>referrer</td>
+          <td><code></code></td>
+          <td>The referrer for this request (the example line is blank for this value)<br>
+          </td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>drupalUserId</td>
+          <td><code>0</code></td>
+          <td>The Drupal user ID initiating the request — 0 means an anonymous user<br>
+          </td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>link</td>
+          <td><code>(blank)</code></td>
+          <td>A relevant link, if one was passed to the logging function</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>msgMessage</td>
+          <td><code>Warning: Invalid argument supplied for foreach() in views_join->build_join</code></td>
+          <td>Message</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>requestId</td>
+          <td><code>v-00000000-845b-0000-8178-22000ab832c9</code></td>
+          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files — for more information, see <a title="Using HTTP request IDs" href="https://docs.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="refFpmAccessLog"><a href="http://www.tothenew.com/blog/php5-fpm-logging/">FPM Access Log</a></h3>
+    <p>Parser: <code>as_acq_FpmAccessLog</code><br>Sample message:<br><code>- -  15/Oct/2017:06:29:38 +0000 "GET /index.php" 200 memory_kb=5632 %cpu=71.42</code></p>
+    <table style="width: 100%;">
+      <caption>Log</caption>
+      <tbody>
+        <tr>
+          <th>Position</th>
+          <th>$fieldName</th>
+          <th>Field Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>0</td>
+          <td>user</td>
+          <td><code>-</code></td>
+          <td>The identity of the user determined by identd. Rarely used.</td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>authUser</td>
+          <td><code>-</code></td>
+          <td>The user name, determined by HTTP authentication</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>msgTimestamp</td>
+          <td><code>15/Oct/2017:06:29:38 +0000</code></td>
+          <td>The date and time of the request.<br>
+            <em>Parsed value stored in Unix/epoch time format (e.g., 1483568967)</em></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>method</td>
+          <td><code>GET</code></td>
+          <td>The method of the request</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>uriPath</td>
+          <td><code>/index.php</code></td>
+          <td>The path requested. Each query parameter will have it's own field in the format <code>uriParam</code></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>status</td>
+          <td><code>200</code></td>
+          <td>The HTTP status code sent from the server to the client</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>memoryKb</td>
+          <td><code>5632</code></td>
+          <td>Peak memory allocated by PHP, in Kilobytes</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>pctCpu</td>
+          <td><code>71.42</code></td>
+          <td>Percentage of the total cpu time used in the last request</td>
+        </tr>
+        <tr>
+          <td><strong>Discarded</strong></td>
+          <td>message</td>
+          <td><code>/AH_FPM_STATUS</code></td>
+          <td>Log messages containing this string, related to Acquia site monitoring, are discarded</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="refFpmErrorLog"><a title="FPM Error Log" href="hhttps://docs.acquia.com/acquia-cloud/monitor/logs/fpm-error">FPM Error Log</a></h3>
+    <p>Parser: <code>as_acq_FpmErrorLog</code><br>Sample message:<br><code>[04-Jan-2017 18:45:13] NOTICE: [pool alphabeta] child 20069 exited with code 0 after 3832.234353 seconds from start</code></p>
+    <table style="width: 100%;">
+      <caption>FPM Error Log</caption>
+      <tbody>
+        <tr>
+          <th>Position</th>
+          <th>$fieldName</th>
+          <th>Field Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>0</td>
+          <td>msgTimestamp</td>
+          <td><code>04-Jan-2017 18:45:13</code></td>
+          <td>The date and time of the request.<br>
+            <em>Parsed value stored in Unix/epoch time format (e.g., 1486080876)</em></td>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>logLevel</td>
+          <td><code>NOTICE</code></td>
+          <td>The issue severity/log level — possible values: ALERT, ERROR, WARNING, NOTICE, DEBUG</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>pool</td>
+          <td><code>alphabeta</code></td>
+          <td>The FPM pool the error occurred in</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>msgMessage</td>
+          <td><code>child 20069 exited with code 0 after 3832.234353 seconds from start</code></td>
+          <td>The message, which will vary from line to line</td>
+        </tr>
+        <tr>
+          <td><strong>Discarded</strong></td>
+          <td>message</td>
+          <td><code>NOTICE<br>DEBUG</code></td>
+          <td>Log messages containing these strings are discarded</td>
+        </tr>
+      </tbody>
+    </table>
+
+   <h3 id="refRsyncLog">Rsync Log</h3>
+   <p>Parser: <code>as_acq_RsyncLog</code><br>Messages generated by the <code>acquia_rsync.sh</code> script are saved to the <code>acquia_rsync.log</code> file. The parser definition file for the log is a placeholder and contains no parsing rules. By default, the rsync script does not generate output unless an error occurs. An rsync error Alert is pre-configured that will send a notification to the Scalyr email address associated with the account.  You can adjust the alert address <a href="https://www.scalyr.com/alerts">here</a>.</p>
+    <table style="width: 100%;">
+      <caption>Rsync Log</caption>
+      <tbody>
+        <tr>
+          <th>Position</th>
+          <th>$fieldName</th>
+          <th>Field Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>*</td>
+          <td>message</td>
+          <td><code>(entire log message)</code></td>
+          <td>Log messages automatically assigned to Scalyr internal <code>$message</code> field.</td>
+        </tr>
+      </tbody>
+    </table>
+   <h3 id="refDrushCronLog">Drush Cron Log</h3>
+   <p>Parser: <code>as_acq_DrushCronLog</code><br>The Acquia <code>drush-cron.log</code> exists if cron output is specifically redirected to the file and it's in the appropriate log directory (<a title="Acquia Druch Cron" href="https://docs.acquia.com/article/drush-cron">Reference</a>). The parser definition file for the log is a placeholder and contains no parsing rules. By default, the log does not exist and the Scalyr configurations do not monitor this log (it's setting is commented out in the agent configuration json files).</p>
+    <table style="width: 100%;">
+      <caption>Drush Cron Log</caption>
+      <tbody>
+        <tr>
+          <th>Position</th>
+          <th>$fieldName</th>
+          <th>Field Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>*</td>
+          <td>message</td>
+          <td><code>(entire log message)</code></td>
+          <td>Log messages automatically assigned to Scalyr internal <code>$message</code> field.</td>
+        </tr>
+      </tbody>
+    </table>
+
+ <h3 id="refAFields">Additional Fields</h3>
+    <p>A number of custom fields are used to annotate, or tag, log messages with meaningful and descriptive attributes. These field tags are used to simplify event filtering, making events easier to find. Custom fields can be defined at various levels. The lowest, or most narrow fields, are set by parser rules. Parser fields can be set for all log messages processed by that parser or conditionally set, depending on a log format match. Next is the Log level. Log level fields are defined in the <code>logs</code> section of the agent configuration file along with the parser setting. All messages processed from a particular log file are tagged with these Log fields. Agent level fields are also defined in the agent configuration file. Agent fields tag ALL messages processed by the Scalyr agent regardless of where the message originated from.</p>
+    
+    <p><em>Server fields</em>. Scalyr describes certain fields as <em>Server</em> fields. All fields defined in the agent configuration file are Server fields (e.g., <code>siteEnv</code>). There are also built-in Server fields (e.g., <code>serverHost</code>). The scope of Server fields makes them special because they can be referenced by other configurations settings such as for <a href="https://www.scalyr.com/help/dashboards">Dashboards</a>.</p>
+    <table style="width: 100%;">
+      <caption>Additional Fields</caption>
+      <tbody>
+        <tr>
+          <th>Server Field?</th>
+          <th>$fieldName</th>
+          <th>Field Value</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>No</td>
+          <td>unexpectedLogFormat</td>
+          <td><code>true</code></td>
+          <td>Identifies a log message as deviating from the expected format. These messages will not be parsed and should be reviewed. An <a href="https://www.scalyr.com/alerts">Alert</a> is generated for these messages. Set by a parser rule.</td>
+        </tr>
+        <tr>
+          <td>Yes</td>
+          <td>hostedOn</td>
+          <td><code>acquia</code></td>
+          <td>Identifies all log messages being parsed by an Acquia parser as pertaining to the Acquia Cloud. Set in the agent and HTTP monitor configuration files.</td>
+        </tr>
+        <tr>
+          <td>Yes</td>
+          <td>siteEnv</td>
+          <td><code>dev</code>, <code>test</code> or <code>prod</code></td>
+          <td>Identifies the Acquia environment which the log message originated from: Development (<code>dev</code>), Staging (<code>test</code>) or Production (<code>prod</code>). Set in the agent and HTTP monitor configuration files.</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
