@@ -658,15 +658,17 @@ rsync -zq --timeout=$IO_TIMEOUT -e "ssh -o ConnectTimeout=$SSH_TIMEOUT" --inplac
           <u>Script Details</u></label>
           <article class="ac-height">
           <ul type="disc">
-            <li>Script shown is slightly different than actual.</li>
+            <li>Script shown is simplified from actual for documentation purposes.</li>
             <li>It does not matter which environment you used for the <code>ACQUIA_SSH_ADDR</code> or <code>ACQUIA_LOG_PATH</code>.</li>
             <li><code>ACQUIA_SITE_ENVS</code> determines which site environments to monitor: Production ('prod'), Staging ('test') and Development ('dev'). If you do not want to monitor Development, for example, delete <code>dev</code> from between the quotes.</li>
             <li>Compression (<code>-z</code> option).<br>
             You can determine whether the increased CPU overhead on the server is worth the savings in bandwidth. Use Acquia Stack Metric CPU charts or run <code>top</code> on the Acquia server to monitor CPU usage. If CPU usage is a concern, remove this option.</li>
             <li>Verbose output<br>
             Change command switch <code>q</code> to <code>v</code> for command execution details such as bytes transferred. Output will be written to the file <code>acquia-rsync.log</code>.</li>
-            <li><code>ConnectTimeout=10</code><br>
+            <li><code>ConnectTimeout=$SSH_TIMEOUT</code><br>
             rsync relies on SSH for its secure TCP connection. Adjust a timeout (e.g., 10 secs) for SSH to prevent stacking of rsync commands if the Acquia server is unreachable (rsync will hang for long periods otherwise). <em>The timeout period must be less than your scheduled execution (cron) of rsync.</em></li>
+            <li><code>StrictHostKeyChecking=no</code><br>
+            To prevent the delay or loss of data sent to Scalyr, StrictHostKeyChecking is disabled. Reason: Acquia will occasionally redeploy or make changes to servers causing their <a href="https://docs.acquia.com/acquia-cloud/ssh/rsa-key-warning">RSA host key to change</a>.  If StrictHostKeyChecking is enabled, rsync/ssh will fail until 'known_hosts' is updated. Since this script is expected to run unattended, via cron, errors would not be noticed, unless monitored, causing a delay or loss of data sent to Scalyr. Note: This solution configures the collection and monitoring of the script output (acquia-rsync.log).</li>
             <li><code>--inplace</code><br>
             If this option is not specified then a new file/inode is created by rsync each time an update occurs for a log (rsync will delete the existing log and replace it with a new updated one). Scalyr sees a new log and will reprocess log entries.</li>
             <li><code>--timeout</code><br>
@@ -696,7 +698,7 @@ rsync -zq --timeout=$IO_TIMEOUT -e "ssh -o ConnectTimeout=$SSH_TIMEOUT" --inplac
         </li>
         <li value="4">Schedule rsync execution with cron
         <div class="codeblock">$ crontab -e</div>
-        <p>Add the below entry your crontab file: (Modify the script directory and execution interval, shown set for every 1 minute, for your environment)
+        <p>Add the below entry to crontab: (Modify the directories and execution interval, set for every 1 minute, for your environment)
         <div class="codeblock">
           */<mark>1</mark> * * * * <mark>/home/scalyr/acquia</mark>/acquia_rsync.sh &gt;&gt; <mark>/var/log/acquia</mark>/acquia-rsync.log 2&gt;&amp;1</div>
         </p>
@@ -754,9 +756,9 @@ rsync -zq --timeout=$IO_TIMEOUT -e "ssh -o ConnectTimeout=$SSH_TIMEOUT" --inplac
         <div><input id="ac7" name="accordion7" type="checkbox"> <label for="ac7">
           <u>Troubleshooting</u></label>
           <article class="ac-height">
-            <p>Check agent log for errors</p>
+            <p>Check Scalyr agent log for errors.</p>
               <div class="codeblock">$ less +G /var/log/scalyr-agent-2/agent.log</div><br>
-              <p>Check Scalyr agent status. Look for lines processed and errors such as 'no matching readable file'<br></p>
+              <p>Check Scalyr agent status. Look for lines processed and errors such as 'no matching readable file' (Only logs with recent updates will show bytes/lines copied)<br></p>
               <div class="codeblock">$ sudo scalyr-agent-2 status -v
               <pre>
 Path /var/log/acquia/bad_log.log: <b>no matching readable file</b>, last checked Tue Oct 10 18:40:20 2017 UTC
