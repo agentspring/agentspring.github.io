@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <title>Creating Azure Linux VM for Monitoring and Log Analytics of Acquia Drupal Sites Using Scalyr | AgentSpring</title>
+    <meta content="AgentSpring, LLC" name="author">
+    <meta content="Creating Azure Virtual Machone for Monitoring Your Drupal Site in the Acquia Cloud with Cloud-based Log
+      Aggregation and Analytics Using Scalyr" name="description">
+    <meta content="azure, linux, virtual machine, vm, acquia, scalyr, drupal, cms, cloud, monitoring, devops, log, aggregation, analytics, apache, mysql, php, access, error, elk, splunk" name="keywords">
+    <meta content="Sublime Text and TextPad" name="generator">
+    </head>
+<body>
+<h1>Creating an Azure Linux Virtual Machine to Support Acquia Log Monitoring and Aggregation Using Scalyr<span style="font-size: .5em"> (<a href="./scalyr_acquia.html">Back to Main Page</a>)</span></h1>
+    <span style="font-size: .8em">AgentSpring, LLC | January 22, 2018 | <a href="mailto:click2see.com?subject=Scalyr-Acquia"  onClick="this.href=this.href.replace('click', 'projects@'); this.href=this.href.replace('2see', 'agentspring');">projects<span style="display:none">foo</span>@agentspring.com</a></span>
+<p>The following is intended to provide general guidance on creating a Linux Virtual Machine for use with your Scalyr-Acquia project.</p>
+
+<ol>
+	<li>You will need an SSH client and generate an RSA private/public key pair so you can login to your Azure VM
+    <ul>
+    	<li>Windows: <a href="http://gitforwindows.org/">Git-Bash</a>, <a href="https://devops.profitbricks.com/tutorials/use-ssh-keys-with-putty-on-windows/">PuTTY</a>, <a href="https://cygwin.com/">Cygwin</a></li>
+		  <li>Linux, Mac OS/X, <a href="https://docs.microsoft.com/en-us/azure/cloud-shell/overview">Azure Cloud Shell</a> (See <a href="https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys?toc=%2fazure%2fvirtual-machines%2flinux%2ftoc.json">Steps</a>)<br>
+Azure Cloud Shell is initiated directly from the Azure Web portal. It is a Bash or PowerShell command shell that runs within the portal from which all necessary tasks can be performed (e.g., generate ssh keys and SSH into the created Linux VM). If this option is used, login to Azure first.</li>
+	 </ul>
+	</li>
+	<li><a href="https://portal.azure.com">Login to Existing Azure Account</a> or <a href="https://www.visualstudio.com/dev-essentials/">Create Free Option 1 (Visual Studio Dev Essentials Account)</a> or  <a href="https://azure.microsoft.com/en-us/free">Create Free Option 2</a>
+	</li>
+	<li><a href="https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal">Create Linux VM via Portal</a> (see below for recommended settings)
+    </li>
+    <li><a href="https://docs.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys">From your SSH client, SSH into the created VM</a> (e.g., <b>ssh &lt;username&gt;@&lt;vm_public_ip_address&gt;</b>)<br>
+        <span>The user name is the name entered on the Basics settings page when configuring the VM. The <u>Public IP address</u> is obtained from the VM overview page</span>
+</li>
+</ol>
+
+<h2>Recommended Settings for VM</h2>
+<h3>Basic Settings</h3>
+<b>Name:</b> scalyr-azure (choose any Computer/Host name)<br>
+<b>VM disk type:</b> <u>HDD</u> (need in order to select low cost VM Size)<br>
+<b>User name:</b> <u>scalyr</u> (VM login name. A 'scalyr' Linux group will automatically be created)<br>
+<b>SSH Public Key</b> <u>ssh-rsa....</u>(Paste public key from Step 1)<br>
+<b>Resource group:</b> <u>acquia</u><br>
+<b>Location:</b> <u>East US</u> Choose same region as Acquia server (Typically East US/East US 2) (you can determine location from Acquia console)<br><br>
+<img src="./images/az-basics.jpg" alt="Azsure VM Basic Settings">
+
+<h3>Virtual Machine Size</h3>
+Click <b>'View All'</b><br>
+If using a free Dev-Essentials Subscription, choose plan that's less than $25/month: (can scale up later if needed)<br>
+<b>B1s</b> 1 vCPU, 1 G mem, 30GiB disk (shows 2 G SSD)<br>
+Cost $8/month. Plenty left to: Scale up VM if needed, add Cloud Shell and other uses<br>
+Other options under $25/mo: B1MS, A0 Standard, A0 Basic, A1 Basic<br>
+<img src="./images/az-size.jpg" alt="Azsure VM Size Settings"><br>
+
+<h3>Optional Feature Settings:</h3>
+Change Disk type back to <b>SSD</b> - had to select HDD at beginning to have low cost Size selections available.<br>
+<b>Use managed disks:</b> <u>Yes</u><br>
+<b>Enable auto-shutdown:</b> <u>Yes</u><br>
+<b>Boot diagnostics:</b> <u>Disabled</u><br>
+<b>Guest OS diagnostics:</b> <u>Disabled</u>
+<p>* Enabling Diagnostics requires creating a storage device (billable resource). For this project it's really not necessary.</p>
+<img src="./images/az-settings.jpg" alt="Azsure VM Optional Settings"><br>
+
+<h3>Summary</h3>
+Size B1S: 1 vCPU, 1G mem, 30GiB HHD disk<br>
+Cost 0.0108 USD/hr, 0.26 USD/day,  $8 USD/mo<br>
+<img src="./images/az-summary.jpg" alt="Azsure VM Summary"><br>
+</body>
+</html>
