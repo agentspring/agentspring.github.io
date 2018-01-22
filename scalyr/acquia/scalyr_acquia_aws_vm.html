@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <title>Creating an AWS Linux VM for Monitoring and Log Analytics of Acquia Drupal Sites Using Scalyr | AgentSpring</title>
+    <meta content="AgentSpring, LLC" name="author">
+    <meta content="Creating AWS Virtual Machine for Monitoring Your Drupal Site in the Acquia Cloud with Cloud-based Log
+      Aggregation and Analytics Using Scalyr" name="description">
+    <meta content="amazon web services, AWS, azure, linux, virtual machine, vm, acquia, scalyr, drupal, cms, cloud, monitoring, devops, log, aggregation, analytics, apache, mysql, php, access, error, elk, splunk" name="keywords">
+    <meta content="Sublime Text and TextPad" name="generator">
+    <style>
+    body {
+  font-family: "Proxima Nova", "proxima-nova", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.6em;
+  color: #222;
+  margin-left: 20px;
+  width: 95%
+}
+</style>
+    </head>
+<body>
+<h1>Creating an AWS Linux Virtual Machine to Support Acquia Log Monitoring and Aggregation Using Scalyr<span style="font-size: .5em"> (<a href="./scalyr_acquia.html">Back to Main Page</a>)</span></h1>
+    <span style="font-size: .8em">AgentSpring, LLC | January 22, 2018 | <a href="mailto:click2see.com?subject=Scalyr-Acquia"  onClick="this.href=this.href.replace('click', 'projects@'); this.href=this.href.replace('2see', 'agentspring');">projects<span style="display:none">foo</span>@agentspring.com</a></span>
+<p>The following is intended to provide general guidance on creating an AWS Linux Virtual Machine for use with your Scalyr-Acquia project.</p>
+
+<ol>
+	<li><a href="https://aws.amazon.com">Login to Existing AWS Account</a> or <a href="https://aws.amazon.com/free/">Start with Free Account</a>
+	</li>
+    <li><u>Change your region</u> to correspond to the region of your Acquia server (you can determine the location from Acquia web console). For example, to change from a default region of US West (Oregon) to US East (N Virginia), select as shown:<br><br>
+        <img src="./images/aws-region.jpg" alt="Changing AWS Region"><br>
+    </li>
+    <li><a href="https://aws.amazon.com/getting-started/tutorials/launch-a-virtual-machine/">Launch and Login to a Linux Virtual Machine</a> (Follow steps as described)
+    </li>
+</ol>
+
+<h3>Notes on AWS VM</h3>
+<ul>
+    <li>Description of Typical VM:<p>
+    <b>AMI:</b> Ubuntu 16.04 LTS (Amazon Linux has also been tested but any Linux should work)<br>
+    <b>Tier:</b> Free<br>
+    <b>Type:</b> t2.micro<br>
+    <b>CPUs:</b> 1 vCPU<br>
+    <b>Memory:</b> 1 GiB<br>
+    <b>Disk:</b> 8 GiB EBS Storage (gp2/SSD)<br>
+    </li>
+
+    <li>Username:<p>AWS Linux instances use a pre-configured username to login to the VM, e.g, <code>ec2-user</code> (unlike Azure which allows you to specify one).  For the Scalyr-Acquia integration you can use this username or create a new <code>scalyr</code> account. See, <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/managing-users.html">Managing User Accounts on Your Linux Instance</a></p>
+</ul>
+</body>
+</html>

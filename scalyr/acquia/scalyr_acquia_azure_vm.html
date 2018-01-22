@@ -2,17 +2,29 @@
 <html lang="en">
   <head>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
-    <title>Creating Azure Linux VM for Monitoring and Log Analytics of Acquia Drupal Sites Using Scalyr | AgentSpring</title>
+    <title>Creating an Azure Linux VM for Monitoring and Log Analytics of Acquia Drupal Sites Using Scalyr | AgentSpring</title>
     <meta content="AgentSpring, LLC" name="author">
-    <meta content="Creating Azure Virtual Machone for Monitoring Your Drupal Site in the Acquia Cloud with Cloud-based Log
+    <meta content="Creating Azure Virtual Machine for Monitoring Your Drupal Site in the Acquia Cloud with Cloud-based Log
       Aggregation and Analytics Using Scalyr" name="description">
     <meta content="azure, linux, virtual machine, vm, acquia, scalyr, drupal, cms, cloud, monitoring, devops, log, aggregation, analytics, apache, mysql, php, access, error, elk, splunk" name="keywords">
     <meta content="Sublime Text and TextPad" name="generator">
-    </head>
+    <style>
+      body {
+  font-family: "Proxima Nova", "proxima-nova", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1.6em;
+  color: #222;
+  margin-left: 20px;
+  width: 95%
+    }
+</style>
+</head>
 <body>
 <h1>Creating an Azure Linux Virtual Machine to Support Acquia Log Monitoring and Aggregation Using Scalyr<span style="font-size: .5em"> (<a href="./scalyr_acquia.html">Back to Main Page</a>)</span></h1>
     <span style="font-size: .8em">AgentSpring, LLC | January 22, 2018 | <a href="mailto:click2see.com?subject=Scalyr-Acquia"  onClick="this.href=this.href.replace('click', 'projects@'); this.href=this.href.replace('2see', 'agentspring');">projects<span style="display:none">foo</span>@agentspring.com</a></span>
-<p>The following is intended to provide general guidance on creating a Linux Virtual Machine for use with your Scalyr-Acquia project.</p>
+<p>The following is intended to provide general guidance on creating an Azure Linux Virtual Machine for use with your Scalyr-Acquia project.</p>
 
 <ol>
 	<li>You will need an SSH client and generate an RSA private/public key pair so you can login to your Azure VM
@@ -38,7 +50,7 @@ Azure Cloud Shell is initiated directly from the Azure Web portal. It is a Bash 
 <b>User name:</b> <u>scalyr</u> (VM login name. A 'scalyr' Linux group will automatically be created)<br>
 <b>SSH Public Key</b> <u>ssh-rsa....</u>(Paste public key from Step 1)<br>
 <b>Resource group:</b> <u>acquia</u><br>
-<b>Location:</b> <u>East US</u> Choose same region as Acquia server (Typically East US/East US 2) (you can determine location from Acquia console)<br><br>
+<b>Location:</b> <u>East US</u> Choose same region as Acquia server (you can determine location from Acquia web console)<br><br>
 <img src="./images/az-basics.jpg" alt="Azsure VM Basic Settings">
 
 <h3>Virtual Machine Size</h3>
