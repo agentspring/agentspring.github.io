@@ -133,7 +133,7 @@ pre  {
   <body>
     <h1>Monitoring Your Drupal Site in the Acquia Cloud with Cloud-based Log
       Aggregation and Analytics Using Scalyr<span style="font-size: .5em"> (<a href="./scalyr_acquia.html">Back to Main Page</a>)</span></h1>
-    <span style="font-size: .8em">AgentSpring, LLC | January 22, 2018 | <a href="mailto:click2see.com?subject=Scalyr-Acquia"  onClick="this.href=this.href.replace('click', 'projects@'); this.href=this.href.replace('2see', 'agentspring');">projects<span style="display:none">foo</span>@agentspring.com</a></span>
+    <span style="font-size: .8em">AgentSpring, LLC | February 12, 2018 | <a href="mailto:click2see.com?subject=Scalyr-Acquia"  onClick="this.href=this.href.replace('click', 'projects@'); this.href=this.href.replace('2see', 'agentspring');">projects<span style="display:none">foo</span>@agentspring.com</a></span>
 <br>
     <h2 id="refTables">Parser Reference Tables and Fields for Acquia Logs</h2>
 
@@ -723,9 +723,9 @@ pre  {
     </table>
 
  <h3 id="refAFields">Additional Fields</h3>
-    <p>A number of custom fields are used to annotate, or tag, log messages with meaningful and descriptive attributes. These field tags are used to simplify event filtering, making events easier to find. Custom fields can be defined at various levels. The lowest, or most narrow fields, are set by <a href="https://www.scalyr.com/help/parsing-logs">parser rules</a>. Parser fields can be defined for all log messages processed by a particular parser or conditionally set, depending on a log format match. Next is the Log level. Log level fields are defined in the <code>logs</code> section of the agent configuration file along with the parser setting. All messages processed from a particular log file are tagged with these Log fields. Agent level fields are also defined in the agent configuration file. Agent fields tag ALL messages processed by the Scalyr agent regardless of where the message originated from.</p>
+    <p>A number of custom fields are used to annotate, or tag, log messages with meaningful and descriptive attributes. These field tags are used to simplify event filtering, making events easier to find. Custom fields can be defined at various levels. The lowest, or most narrow fields, are set by <a href="https://www.scalyr.com/help/parsing-logs">parser rules</a>. <u>Parser fields</u> can be defined for all log messages processed by a particular parser or conditionally set, depending on a log format match. Next is the Log level. <u>Log level fields</u> are defined in the <code>logs</code> section of the agent configuration file along with the parser setting. All messages processed from a particular log file are tagged with these Log fields. <u>Server level fields</u> are also defined in the agent configuration file. Server fields tag ALL messages processed by the Scalyr agent regardless of where the message originated from.</p>
 
-    <p><em>Server fields</em>. Scalyr describes certain fields as <em>Server</em> fields. All fields defined in the agent configuration file are Server fields (e.g., <code>siteEnv</code>). There are also built-in Server fields (e.g., <code>serverHost</code>). The scope of Server fields makes them special because they can be referenced by other configurations settings such as for <a href="https://www.scalyr.com/help/dashboards">Dashboards</a>.</p>
+    <p><em>Server fields</em>. Scalyr describes certain fields as <em>Server</em> fields. All fields defined in the <code>server_attributes: {}</code> section of an agent configuration file are custom Server fields. There are also built-in Server fields (e.g., <code>serverHost</code>). The scope of Server fields makes them special because they can be referenced by other configurations settings such as for <a href="https://www.scalyr.com/help/dashboards">Dashboards</a> and <a href="https://www.scalyr.com/help/alerts">Alerts</a>.</p>
     <table style="width: 100%;">
       <caption>Additional Fields</caption>
       <tbody>
@@ -742,14 +742,14 @@ pre  {
           <td>Identifies a log message as deviating from the expected format. These messages will not be parsed and should be reviewed. An <a href="https://www.scalyr.com/alerts">Alert</a> is generated for these messages. Set by a parser rule.</td>
         </tr>
         <tr>
-          <td>Yes</td>
+          <td>No</td>
           <td>hostedOn</td>
           <td><code>acquia</code></td>
           <td>Identifies all log messages being parsed by an Acquia parser as pertaining to the Acquia Cloud. Set in the agent and HTTP monitor configuration files.</td>
         </tr>
         <tr>
-          <td>Yes</td>
-          <td>siteEnv</td>
+          <td>No</td>
+          <td>acquiaSiteEnv</td>
           <td><code>dev</code>, <code>test</code> or <code>prod</code></td>
           <td>Identifies the Acquia environment which the log message originated from: Development (<code>dev</code>), Staging (<code>test</code>) or Production (<code>prod</code>). Set in the agent and HTTP monitor configuration files.</td>
         </tr>
