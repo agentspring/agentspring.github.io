@@ -637,7 +637,7 @@ $</pre>
         <br>
         </li>
         <li value="2">Edit <code>acquia_rsync.sh</code> to adjust variables for your
-          environment. Exit the editor when finished (Esc.
+          environment. Exit the editor when finished.
         <div class="codeblock">$ vi acquia_rsync.sh</div>
         <div class="codeblock">
           <pre>#!/bin/bash
@@ -679,7 +679,7 @@ rsync -zq --timeout=$IO_TIMEOUT -e "ssh -o ConnectTimeout=$SSH_TIMEOUT" --inplac
             <li><code>ConnectTimeout=$SSH_TIMEOUT</code><br>
             rsync relies on SSH for its secure TCP connection. Adjust a timeout (e.g., 10 secs) for SSH to prevent stacking of rsync commands if the Acquia server is unreachable (rsync will hang for long periods otherwise). <em>The timeout period must be less than your scheduled execution (cron) of rsync.</em></li>
             <li><code>StrictHostKeyChecking=no</code><br>
-            To prevent the delay or loss of data sent to Scalyr, StrictHostKeyChecking is disabled. Reason: Acquia will occasionally redeploy or make changes to servers causing their <a href="https://docs.acquia.com/acquia-cloud/ssh/rsa-key-warning">RSA host key to change</a>.  If StrictHostKeyChecking is enabled, rsync/ssh will fail until 'known_hosts' is updated. Since this script is expected to run unattended, via cron, errors would not be noticed, unless monitored, causing a delay or loss of data sent to Scalyr. Note: This solution configures the collection and monitoring of the script output (acquia-rsync.log).</li>
+            To prevent the delay or loss of data sent to Scalyr, StrictHostKeyChecking is disabled. Reason: Acquia will occasionally redeploy or make changes to servers causing their <a href="https://docs.acquia.com/acquia-cloud/ssh/rsa-key-warning">RSA host key to change</a>.  If StrictHostKeyChecking is enabled, rsync/ssh will fail until 'known_hosts' is updated. Since this script is expected to run unattended, via cron, errors would not be noticed, unless monitored, causing a delay or loss of data sent to Scalyr. Note: This solution configures the collection and monitoring of the script output to <code>acquia-rsync.log</code>.</li>
             <li><code>--inplace</code><br>
             If this option is not specified then a new file/inode is created by rsync each time an update occurs for a log (rsync will delete the existing log and replace it with a new updated one). Scalyr sees a new log and will reprocess log entries.</li>
             <li><code>--timeout</code><br>
@@ -858,7 +858,7 @@ Path /var/log/scalyr-agent-2/agent.log: copied 265187 bytes (1060 lines), 0 byte
     </table>
     <ol type="a">
       <li>Install Scalyr command-line tool
-        <p>To install the supplied parsers and other Scalyr configuration you need to first install the <a title="Scalyr command-line tool" href="https://github.com/scalyr/scalyr-tool">Scalyr command-line tool</a></p>
+        <p>To install the supplied parsers and other Scalyr configuration files you need to first install the <a title="Scalyr command-line tool" href="https://github.com/scalyr/scalyr-tool">Scalyr command-line tool</a></p>
         <div class="codeblock">
           $ cd <mark>/home/scalyr</mark>/acquia<br>
           $ curl https://raw.githubusercontent.com/scalyr/scalyr-tool/master/scalyr > scalyr<br>
@@ -881,7 +881,7 @@ Path /var/log/scalyr-agent-2/agent.log: copied 265187 bytes (1060 lines), 0 byte
       </li>
 
       <li>Install Parsers and Other Configurations
-        <p>The agent configuration already specifies the parsers which have yet to be installed. These parsers appear as 'Undefined' on the Scalyr <a title="Scalyr Parsers" href="https://www.scalyr.com/parsers">Parsers</a> page. The installation script uses the command-line tool to install the parsers and other configurations on Scalyr server.</p>
+        <p>The agent configuration already specifies the parsers which have yet to be installed. These parsers appear as 'Undefined' on the Scalyr <a title="Scalyr Parsers" href="https://www.scalyr.com/parsers">Parsers</a> page. The installation script uses the command-line tool to install the parsers and other configurations on the Scalyr server.</p>
         <div class="codeblock">
           $ ./install_configs.sh
         </div>
