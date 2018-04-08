@@ -133,7 +133,7 @@ pre  {
   <body>
     <h1>Monitoring Your Drupal Site in the Acquia Cloud with Cloud-based Log
       Aggregation and Analytics Using Scalyr<span style="font-size: .5em"> (<a href="./scalyr_acquia.html">Back to Main Page</a>)</span></h1>
-    <span style="font-size: .8em">AgentSpring, LLC | February 12, 2018 | <a href="mailto:click2see.com?subject=Scalyr-Acquia"  onClick="this.href=this.href.replace('click', 'projects@'); this.href=this.href.replace('2see', 'agentspring');">projects<span style="display:none">foo</span>@agentspring.com</a></span>
+    <span style="font-size: .8em">AgentSpring, LLC | April 08, 2018 | <a href="mailto:click2see.com?subject=Scalyr-Acquia"  onClick="this.href=this.href.replace('click', 'projects@'); this.href=this.href.replace('2see', 'agentspring');">projects<span style="display:none">foo</span>@agentspring.com</a></span>
 <br>
     <h2 id="refTables">Field Reference Tables for Acquia Logs</h2>
 
@@ -291,7 +291,7 @@ pre  {
     </table>
 
     <h3 id="refApacheErrorLog"><a title="Acquia Apache Error Log" href="https://docs.acquia.com/acquia-cloud/monitor/logs/apache-error">Apache Error Log</a></h3>
-    <p>Parser: <code>as_acq_ApacheErrorLog</code><br>Sample message:<br><code>[Fri Aug 18 20:40:36.849360 2017] [access_compat:error] [pid 11069] [client 10.0.0.1:19924] AH01797: client denied by server configuration: /var/www/html/alphabeta/docroot/index.php</code></p>
+    <p>Parser: <code>as_acq_ApacheErrorLog</code><br>Sample message:<br><code>[Thu Feb 22 11:18:32 2018] [error] [pid=26069] "fasthttp" vhost=alphabeta.prod.acquia-sites.com forwarded_for="10.188.203.40" request_id="v-1dcb7d58-17c2-11e8-bb76-22000a3b5" hosting_site=alphabeta9x93yvwypy AH01630: client denied by server configuration: /var/www/html/alphabeta9x93yvwypy/docroot/.git</code></p>
     <table style="width: 100%;">
       <caption>Apache Error Log</caption>
       <tbody>
@@ -310,38 +310,54 @@ pre  {
         </tr>
         <tr>
           <td>1</td>
-          <td>module</td>
-          <td><code>access_compat</code></td>
-          <td>The module generating this error</td>
-        </tr>
-        <tr>
-          <td>2</td>
           <td>logLevel</td>
           <td><code>error</code></td>
           <td>The severity/log level of this issue. <a href="http://httpd.apache.org/docs/current/mod/core.html#loglevel">Levels</a>: emerg, alert, crit, error, warn, notice, info, debug</td>
         </tr>
         <tr>
-          <td>3</td>
+          <td>2</td>
           <td>pid</td>
-          <td><code>11069</code></td>
+          <td><code>26069</code></td>
           <td>The process ID (pid) handling this request</td>
         </tr>
         <tr>
+          <td>3</td>
+          <td>agent</td>
+          <td><code>fasthttp</code></td>
+          <td>The user-agent, or browser identification string, encased in quotation marks</td>
+        </tr>
+        <tr>
           <td>4</td>
-          <td>clientIp</td>
-          <td><code>10.0.0.1</code></td>
-          <td>The internal IP address of the balancer that forwarded the request to the server</td>
+          <td>acquiaVhost</td>
+          <td><code>alphabeta.prod.acquia-sites.com</code></td>
+          <td>The underlying Acquia virtual host matching the requested hostname</td>
         </tr>
         <tr>
           <td>5</td>
-          <td>clientPort</td>
-          <td><code>19924</code></td>
-          <td>The port number used by the balancer that forwarded the request to the server</td>
+          <td>forwardedFor</td>
+          <td><code>10.188.203.40</code></td>
+          <td>The full set of IP addresses tracked as "requester IP," which will contain the IP addresses of the following if they are in use by the subscription: <ul>
+            <li>Load balancer</li>
+            <li>ELB (Elastic Load Balancer)</li>
+            <li>Content Delivery Networks or Web Application Firewalls (WAFs) such as Acquia Cloud Edge</li>
+          </ul></td>
         </tr>
         <tr>
           <td>6</td>
+          <td>requestId</td>
+          <td><code>v-1dcb7d58-17c2-11e8-bb76-22000a3b5</code></td>
+          <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files. For more information, see <a title="Using HTTP request IDs" href="https://docs.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>acquiaSiteName</td>
+          <td><code>alphabeta9x93yvwypy</code></td>
+          <td>The internal Acquia site name (AH_SITE_NAME) this request is for</td>
+        </tr>
+        <tr>
+          <td>8</td>
           <td>msgMessage</td>
-          <td><code>AH01797: client denied by server configuration: /var/www/html/alphabeta/docroot/index.php</code></td>
+          <td><code>AH01630: client denied by server configuration: /var/www/html/alphabeta9x93yvwypy/docroot/.git</code></td>
           <td>The message, which will vary from line to line</td>
         </tr>
       </tbody>
