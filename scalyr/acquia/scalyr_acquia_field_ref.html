@@ -133,7 +133,7 @@ pre  {
   <body>
     <h1>Monitoring Your Drupal Site in the Acquia Cloud with Cloud-based Log
       Aggregation and Analytics Using Scalyr<span style="font-size: .5em"> (<a href="./scalyr_acquia.html">Back to Main Page</a>)</span></h1>
-    <span style="font-size: .8em">AgentSpring, LLC | April 08, 2018 | <a href="mailto:click2see.com?subject=Scalyr-Acquia"  onClick="this.href=this.href.replace('click', 'projects@'); this.href=this.href.replace('2see', 'agentspring');">projects<span style="display:none">foo</span>@agentspring.com</a></span>
+    <span style="font-size: .8em">AgentSpring, LLC | April 24, 2018 | <a href="mailto:click2see.com?subject=Scalyr-Acquia"  onClick="this.href=this.href.replace('click', 'projects@'); this.href=this.href.replace('2see', 'agentspring');">projects<span style="display:none">foo</span>@agentspring.com</a></span>
 <br>
     <h2 id="refTables">Field Reference Tables for Acquia Logs</h2>
 
@@ -384,18 +384,12 @@ pre  {
         </tr>
         <tr>
           <td>1</td>
-          <td>logLevel</td>
-          <td><code>Fatal</code></td>
-          <td>Type of message, indicating severity/error level.</td>
-        </tr>
-        <tr>
-          <td>2</td>
           <td>msgMessage</td>
-          <td><code>Allowed memory size of 367001600 bytes exhausted (tried to allocate 352591872 bytes) in /full/path/to/module/notification.php on line 504</code></td>
+          <td><code>PHP Fatal error: Allowed memory size of 367001600 bytes exhausted (tried to allocate 352591872 bytes) in /full/path/to/module/notification.php on line 504</code></td>
           <td>Full text of error message</td>
         </tr>
         <tr>
-          <td>3</td>
+          <td>2</td>
           <td>requestId</td>
           <td><code>v-0000zzzz-d2b4-0000-b3a4-129zzzzd8266</code></td>
           <td>A unique ID attached to this request by the load balancer, which appears in several Acquia Cloud log files. For more information, see <a href="https://docs.acquia.com/acquia-cloud/develop/requestid">Using HTTP request IDs</a></td>
